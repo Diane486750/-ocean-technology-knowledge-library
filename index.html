@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>window.__STATIC__=true;</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>海洋技术知识库</title>
+<link rel="stylesheet" href="/static/katex/katex.min.css">
+<style>
+  :root { --blue:#2563eb; --bg:#f5f7fa; --card:#fff; --ok:#16a34a; --dup:#d97706; --err:#dc2626; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "Microsoft YaHei", sans-serif; background: var(--bg); color: #1f2937; padding: 16px; }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 20px; margin-bottom: 4px; }
+  .sub { color: #6b7280; font-size: 13px; margin-bottom: 14px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+  .tabs button { flex: 1; padding: 11px; border: 0; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; background: #e5e7eb; color: #374151; }
+  .tabs button.on { background: var(--blue); color: #fff; }
+  .card { background: var(--card); border-radius: 12px; padding: 16px; margin-bottom: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  label { display: block; font-size: 13px; color: #374151; margin: 12px 0 4px; }
+  select, input[type=text] { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 15px; }
+  #drop { border: 2px dashed #cbd5e1; border-radius: 10px; padding: 26px 12px; text-align: center; color: #6b7280; cursor: pointer; margin-top: 10px; }
+  #drop.hover { border-color: var(--blue); background: #eff6ff; }
+  #drop p { font-size: 14px; }
+  #drop input { display: none; }
+  button { width: 100%; padding: 13px; background: var(--blue); color: #fff; border: 0; border-radius: 10px; font-size: 16px; font-weight: 600; margin-top: 14px; cursor: pointer; }
+  button:disabled { background: #93c5fd; cursor: not-allowed; }
+  .filelist { margin-top: 10px; font-size: 13px; color: #374151; }
+  .filelist div { padding: 4px 0; border-bottom: 1px dashed #e5e7eb; }
+  .r table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .r th, .r td { text-align: left; padding: 8px 6px; border-bottom: 1px solid #e5e7eb; }
+  .ok { color: var(--ok); } .dup { color: var(--dup); } .err { color: var(--err); }
+  .receipt { white-space: pre-wrap; font-size: 12px; background: #f9fafb; border-radius: 8px; padding: 12px; overflow-x: auto; max-height: 360px; overflow-y: auto; }
+  .hint { font-size: 12px; color: #9ca3af; margin-top: 6px; }
+
+  .modes { display: flex; gap: 6px; margin-top: 10px; }
+  .modes button { padding: 8px; font-size: 13.5px; background: #e5e7eb; color: #374151; margin-top: 0; }
+  .modes button.on { background: #1d4ed8; color: #fff; }
+
+  .chapter { padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; cursor: pointer; }
+  .chapter.on { border-color: var(--blue); background: #eff6ff; }
+  .chapter .t { font-size: 14px; font-weight: 600; }
+  .chapter .m { font-size: 12px; color: #6b7280; margin-top: 3px; }
+  .badge { display: inline-block; background: #fef3c7; color: #92400e; border-radius: 4px; padding: 1px 6px; font-size: 11px; margin-right: 4px; }
+  .badge.kb { background: #dcfce7; color: #166534; }
+
+  #mmsvg { width: 100%; height: 580px; background: #fbfdff; border-radius: 8px; touch-action: none; }
+  .mmbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .mmbar .t { font-size: 14px; font-weight: 700; color: #1d4ed8; }
+  .mmbar button { width: auto; padding: 5px 11px; font-size: 12px; margin: 0; background: #e5e7eb; color: #374151; }
+
+  .kp { border: 1px solid #e5e7eb; border-radius: 10px; padding: 13px; margin-bottom: 13px; scroll-margin-top: 12px; }
+  .kp.hl { border-color: #f59e0b; background: #fffbeb; box-shadow: 0 0 0 3px #fef3c7; }
+  .kp-head { font-size: 16px; font-weight: 700; margin-bottom: 9px; line-height: 1.4; }
+  .ktype { display: inline-block; font-size: 11px; background: #dbeafe; color: #1e40af; border-radius: 4px; padding: 1px 7px; margin-right: 7px; vertical-align: middle; }
+  .kp-concept { font-size: 14px; line-height: 1.75; color: #374151; margin-bottom: 8px; }
+  .kp-formula { background: #f8fafc; border-left: 3px solid #60a5fa; padding: 10px 12px; border-radius: 6px; margin: 9px 0; overflow-x: auto; }
+  .katex-display { margin: 6px 0 !important; }
+  .fsym { font-size: 12.5px; color: #4b5563; line-height: 1.9; margin-top: 6px; }
+  .fsym > span { display: block; }
+  .fsym .katex { font-size: 1.06em; }
+  .fmeta { font-size: 12.5px; color: #6b7280; margin-top: 5px; line-height: 1.6; }
+  .kp-example { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 9px 11px; border-radius: 6px; margin: 9px 0; font-size: 13.5px; line-height: 1.65; }
+  .kp-example .sol { color: #6b7280; margin-top: 5px; }
+  .kp-link { font-size: 12.5px; color: #6b7280; margin-top: 7px; line-height: 1.8; }
+  .kp-link b { color: #374151; font-weight: 600; }
+  .kp-ref { color: #2563eb; border-bottom: 1px dashed #93c5fd; cursor: pointer; padding: 1px 2px; }
+  .kp-ref:hover { background: #eff6ff; }
+  .kp-pages { margin-top: 9px; }
+  .kp-pages .plabel { font-size: 12.5px; color: #6b7280; margin-bottom: 4px; }
+  .kp-pages img { width: 132px; border: 1px solid #e5e7eb; border-radius: 6px; margin: 0 6px 6px 0; cursor: zoom-in; vertical-align: top; }
+  #lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.82); display: none; align-items: center; justify-content: center; z-index: 99; padding: 12px; }
+  #lightbox img { max-width: 100%; max-height: 100%; border-radius: 6px; }
+  /* 前置知识点解析弹窗 */
+  .kmodal { position: fixed; inset: 0; background: rgba(15,23,42,.45); z-index: 120; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .kmodal-box { background: #fff; border-radius: 12px; max-width: 620px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 18px 20px; position: relative; box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+  .kmodal-x { position: absolute; top: 10px; right: 12px; border: none; background: #f1f5f9; border-radius: 6px; width: 26px; height: 26px; cursor: pointer; font-size: 13px; color: #475569; }
+  .km-title { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 10px; padding-right: 30px; line-height: 1.5; }
+  .km-badge { background: #fef3c7; color: #92400e; border-radius: 5px; padding: 2px 7px; font-size: 11px; font-weight: 600; }
+  .km-sec { margin-bottom: 12px; }
+  .km-sec > b { display: block; font-size: 12.5px; color: #2563eb; margin-bottom: 4px; }
+  .km-sec p { margin: 0; font-size: 13.5px; line-height: 1.8; color: #334155; }
+  .km-tex { font-size: 14px; margin: 4px 0; }
+  .km-p { font-size: 13.5px; line-height: 1.75; color: #334155; margin: 0 0 10px; }
+  .km-sug { display: flex; flex-direction: column; gap: 6px; }
+  .km-sug .kp-ref { font-size: 13px; }
+  .km-sug i { color: #94a3b8; font-style: normal; font-size: 11.5px; }
+  .km-note { font-size: 12px; color: #b45309; background: #fffbeb; border-radius: 6px; padding: 8px 10px; line-height: 1.65; margin: 12px 0 0; }
+  .km-note-inline { color: #94a3b8; font-size: 11.5px; }
+  .km-btn { margin-top: 8px; background: #2563eb; color: #fff; border: none; border-radius: 8px; padding: 9px 14px; font-size: 13.5px; cursor: pointer; }
+  .km-btn:hover { background: #1d4ed8; }
+  .diagram { margin: 9px 0; text-align: center; }
+  .diagram img { max-width: 100%; border: 1px solid #e5e7eb; border-radius: 6px; background: #fff; }
+  .diagram .cap { font-size: 12px; color: #9ca3af; margin-top: 3px; }
+
+  /* 知识整合 */
+  .thread { border: 1px solid #e5e7eb; border-left: 4px solid #2563eb; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+  .th-title { font-size: 15.5px; font-weight: 700; color: #1e40af; margin-bottom: 7px; }
+  .th-struct { font-size: 13px; color: #4b5563; margin-bottom: 7px; }
+  .th-items { font-size: 13px; color: #374151; margin-bottom: 7px; line-height: 2.0; }
+  .th-items .itag { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 4px; padding: 0 6px; font-size: 11.5px; margin-right: 4px; }
+  .th-insight { font-size: 13.5px; color: #374151; line-height: 1.75; background: #f8fafc; border-radius: 6px; padding: 9px 11px; margin-bottom: 7px; }
+  .th-value { font-size: 13px; color: #6b7280; line-height: 1.65; }
+
+  /* 层次导航 */
+  .flowline { background: #eff6ff; border-left: 4px solid #2563eb; border-radius: 8px; padding: 11px 13px; font-size: 13.5px; line-height: 1.75; color: #1e3a8a; margin-bottom: 16px; }
+  .hnode { border: 2px solid #93c5fd; border-radius: 12px; background: #fff; overflow: hidden; }
+  .hhead { display: flex; align-items: center; gap: 9px; padding: 12px 14px; cursor: pointer; }
+  .hhead:hover { background: #f0f7ff; }
+  .hnum { flex: none; width: 27px; height: 27px; border-radius: 8px; background: #2563eb; color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .hname { flex: 1; font-size: 14.5px; font-weight: 700; line-height: 1.4; }
+  .hrole { flex: none; background: #fef3c7; color: #92400e; border-radius: 6px; padding: 2px 8px; font-size: 11.5px; white-space: nowrap; }
+  .hcount { flex: none; color: #9ca3af; font-size: 11.5px; white-space: nowrap; }
+  .hlogic { text-align: center; color: #2563eb; font-size: 12.5px; padding: 8px 6px; line-height: 1.65; }
+  .hsections { padding: 2px 14px 14px; }
+  .snode { display: flex; align-items: center; justify-content: space-between; gap: 8px; border: 1.5px solid #c7d2fe; background: #f5f3ff; border-radius: 9px; padding: 9px 12px; cursor: pointer; }
+  .snode:hover { background: #ede9fe; border-color: #8b5cf6; }
+  .sname { font-size: 13.5px; font-weight: 600; color: #5b21b6; line-height: 1.45; }
+  .skps { flex: none; font-size: 11.5px; color: #9ca3af; white-space: nowrap; }
+  .slogic { text-align: center; color: #8b5cf6; font-size: 12px; padding: 6px 4px; line-height: 1.6; }
+
+  /* 考点 */
+  .exsec { font-size: 14px; font-weight: 700; margin: 14px 0 8px; color: #1e40af; }
+  .tchips { margin-top: 6px; }
+  .tchip { display: inline-block; background: #e0e7ff; color: #3730a3; border-radius: 6px; padding: 3px 9px; font-size: 12px; margin: 0 6px 6px 0; font-weight: 500; }
+  .exkp { border: 1px solid #e5e7eb; border-left: 4px solid #dc2626; border-radius: 9px; padding: 11px 13px; margin-bottom: 11px; }
+  .exhead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .exrank { flex: none; width: 24px; height: 24px; border-radius: 7px; background: #dc2626; color: #fff; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  .exname { flex: 1; font-size: 14.5px; font-weight: 700; }
+  .expts { flex: none; color: #dc2626; font-size: 12.5px; font-weight: 600; }
+  .exbar { height: 5px; background: #fee2e2; border-radius: 3px; margin: 7px 0; overflow: hidden; }
+  .exbar i { display: block; height: 100%; background: #dc2626; border-radius: 3px; }
+  .exmeta { font-size: 12.5px; color: #4b5563; line-height: 1.75; margin-top: 4px; }
+  .exsol { background: #f0f9ff; border-left: 3px solid #0284c7; border-radius: 6px; padding: 9px 12px; margin-top: 8px; }
+  .exsol-h { font-size: 12.5px; font-weight: 700; color: #0369a1; margin-bottom: 6px; }
+  .exsteps { margin: 0; padding-left: 20px; }
+  .exsteps li { font-size: 13px; line-height: 1.9; color: #334155; margin-bottom: 4px; padding-left: 2px; }
+  .exsteps li::marker { color: #0284c7; font-weight: 700; }
+  .expat { background: #fffbeb; border-left: 3px solid #d97706; border-radius: 6px; padding: 8px 12px; margin-top: 7px; font-size: 13px; line-height: 1.75; color: #78350f; }
+
+  /* 学习指南 */
+  .gchap { border: 2px solid #e5e7eb; border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
+  .ghead { display: flex; align-items: center; gap: 9px; padding: 12px 14px; background: #fafafa; cursor: pointer; flex-wrap: wrap; }
+  .ghead:hover { background: #f3f4f6; }
+  .gname { flex: 1; font-size: 15px; font-weight: 700; }
+  .gtier { flex: none; border-radius: 6px; padding: 3px 9px; font-size: 12px; font-weight: 700; color: #fff; }
+  .tier-必考 { background: #dc2626; }
+  .tier-重点 { background: #ea580c; }
+  .tier-一般 { background: #0891b2; }
+  .tier-选看 { background: #9ca3af; }
+  .gbody { padding: 12px 14px; border-top: 1px solid #f0f0f0; }
+  .gsummary { font-size: 13px; color: #6b7280; margin-bottom: 9px; }
+  .gguide { font-size: 13.8px; line-height: 1.85; color: #1f2937; background: #f8fafc; border-left: 3px solid #2563eb; border-radius: 6px; padding: 11px 13px; margin-bottom: 10px; white-space: pre-wrap; }
+  .gnote { font-size: 13px; line-height: 1.7; margin-bottom: 6px; }
+  .gkp { display: flex; align-items: center; gap: 7px; padding: 6px 0; border-bottom: 1px dashed #f0f0f0; font-size: 13px; }
+  .gkp:last-child { border-bottom: none; }
+  .gkpt { flex: none; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #fff; }
+  .gkpname { flex: 1; }
+  .gkpr { flex: none; color: #9ca3af; font-size: 11.5px; }
+
+  .reader { margin-top: 12px; border-top: 1px solid #e5e7eb; padding-top: 12px; font-size: 14px; line-height: 1.7; }
+  .reader h2 { font-size: 16px; margin: 14px 0 6px; color: #1d4ed8; }
+  .reader p { margin: 6px 0; }
+  .reader blockquote { border-left: 3px solid #cbd5e1; padding-left: 10px; color: #6b7280; margin: 6px 0; }
+  .reader code { background: #f3f4f6; padding: 1px 5px; border-radius: 4px; font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>海洋技术知识库</h1>
+  <p class="sub">上传课件自动整理；思维导图 + 知识点（概念/公式/例题/关联）</p>
+
+  <div class="tabs">
+    <button id="tabUpload" class="on" type="button">📤 上传资料</button>
+    <button id="tabBrowse" type="button">📖 浏览课程</button>
+    <button id="tabIntegrate" type="button">🔗 知识整合</button>
+  </div>
+
+  <!-- ============ 上传 ============ -->
+  <div id="viewUpload">
+    <div class="card">
+      <label>① 学科</label>
+      <select id="subject"></select>
+      <label>② 课程（没有就输入新课程名）</label>
+      <input type="text" id="course" list="courses" placeholder="如：物理海洋学（新课程直接输入名字）">
+      <datalist id="courses"></datalist>
+      <label>③ 你的名字（可选）</label>
+      <input type="text" id="uploader" placeholder="如：张三">
+      <div id="drop">
+        <p>点这里选文件，或把文件拖进来</p>
+        <input type="file" id="files" multiple accept=".pptx,.ppt,.pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.webp,.bmp,.txt,.md,image/*">
+      </div>
+      <div class="filelist" id="filelist"></div>
+      <button id="btn" type="button">上传</button>
+      <p class="hint">支持 PPT/PDF/Word/图片。同一份文件传多次只存一次（自动去重）。</p>
+    </div>
+    <div class="card r" id="result" style="display:none"><div id="resultTable"></div></div>
+    <div class="card">
+      <h3 style="font-size:15px;margin-bottom:8px">最近入库清单</h3>
+      <button id="refreshReceipt" type="button" style="background:#e5e7eb;color:#1f2937;margin-top:0">刷新清单</button>
+      <pre class="receipt" id="receipt" style="margin-top:10px">加载中…</pre>
+    </div>
+  </div>
+
+  <!-- ============ 浏览 ============ -->
+  <div id="viewBrowse" style="display:none">
+    <div class="card">
+      <label>学科</label>
+      <select id="bSubject"></select>
+      <label>课程</label>
+      <select id="bCourse"></select>
+      <div class="modes">
+        <button id="modeGuide" class="on" type="button">📖 学习指南</button>
+        <button id="modeExam" type="button">🎯 考点</button>
+        <button id="modeHier" type="button">🧠 层次导航</button>
+        <button id="modeMind" type="button">🌳 总览树</button>
+        <button id="modeKP" type="button">📚 知识点</button>
+      </div>
+    </div>
+    <div class="card" id="paneGuide">
+      <div id="guideView"><p class="hint">加载中…</p></div>
+    </div>
+    <div class="card" id="paneExam" style="display:none">
+      <div id="examView"><p class="hint">加载中…</p></div>
+    </div>
+    <div class="card" id="paneHier">
+      <div id="hierNav"><p class="hint">加载中…</p></div>
+    </div>
+    <div class="card" id="paneMind" style="display:none">
+      <div class="mmbar"><span class="t">思维导图总览（可拖动/滚轮缩放，点节点跳转）</span><button id="mmFit" type="button">适应窗口</button></div>
+      <div id="mindmap"><p class="hint">加载中…</p></div>
+    </div>
+    <div class="card" id="paneKP" style="display:none">
+      <div id="kpChapters"><p class="hint">加载中…</p></div>
+      <div id="kpList"></div>
+    </div>
+  </div>
+
+  <!-- ============ 知识整合 ============ -->
+  <div id="viewIntegrate" style="display:none">
+    <div class="card">
+      <p class="hint" style="margin-bottom:10px">跨课程知识整合：找出不同课程里共享**同一数学结构 / 同一原理**的知识点，串成「主题线」，帮助知识迁移。</p>
+      <div id="integration"><p class="hint">加载中…</p></div>
+    </div>
+  </div>
+</div>
+
+<div id="lightbox" onclick="this.style.display='none'"><img id="lbimg" src=""></div>
+<div id="kpModal" class="kmodal" style="display:none" onclick="if(event.target===this)closeKpModal()">
+  <div class="kmodal-box">
+    <button class="kmodal-x" id="kpModalClose" type="button" onclick="closeKpModal()">✕</button>
+    <div id="kpModalBody"></div>
+  </div>
+</div>
+
+<script src="/static/katex/katex.min.js"></script>
+<script src="/static/d3.min.js"></script>
+<script src="/static/markmap-view.js"></script>
+<script src="/static/markmap-lib.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+/* ============================================================
+   数据源抽象层
+   本地模式：直接打 Flask 的 /api/*
+   静态模式（静态站 / GitHub Pages）：拦下 /api/* 请求，
+             改读导出时预生成的 data/*.json 与 pages/*.webp
+   ============================================================ */
+const STATIC_MODE = !!window.__STATIC__;
+let _staticMapPromise = null;
+function _staticMap(){
+  if(!_staticMapPromise){
+    _staticMapPromise = fetch('data/manifest.json').then(r=>r.ok?r.json():{}).catch(()=>({}));
+  }
+  return _staticMapPromise;
+}
+function _mapUrl(map, url){
+  if(url.startsWith('/api/kb/page')){
+    const q = new URLSearchParams(url.split('?')[1] || '');
+    const doc = q.get('doc_id') || '';
+    const n = parseInt(q.get('n') || '1', 10);
+    return `pages/${encodeURIComponent(q.get('subject')||'')}/${encodeURIComponent(q.get('course')||'')}/`
+         + `${encodeURIComponent(doc)}/p${String(n).padStart(3,'0')}.webp`;
+  }
+  if(url.startsWith('/api/kb/diagram')){
+    const q = new URLSearchParams(url.split('?')[1] || '');
+    return `diagrams/${encodeURIComponent(q.get('subject')||'')}/${encodeURIComponent(q.get('course')||'')}/`
+         + `${encodeURIComponent(q.get('doc')||'')}/${encodeURIComponent(q.get('name')||'')}.webp`;
+  }
+  return map[url] || url;
+}
+if(STATIC_MODE){
+  const _origFetch = window.fetch.bind(window);
+  window.fetch = async (u, o) => {
+    if(typeof u === 'string' && u.startsWith('/api/')){
+      const map = await _staticMap();
+      return _origFetch(_mapUrl(map, u), o);
+    }
+    return _origFetch(u, o);
+  };
+}
+let files = [];
+
+/* ---------- KaTeX 专业数学排版 ---------- */
+function renderTex(tex, display){
+  if(!tex) return '';
+  try{
+    return katex.renderToString(String(tex), {displayMode: !!display, throwOnError:false, strict:false, output:'html'});
+  }catch(e){ return '<code>'+esc(tex)+'</code>'; }
+}
+/* 概念正文里若有 $...$ 行内公式也渲染 */
+function withInlineTex(s){
+  if(!s) return '';
+  const parts = String(s).split(/(\$[^$]+\$)/g);
+  return parts.map(p=>{
+    if(p.length>2 && p[0]==='$' && p.endsWith('$')) return renderTex(p.slice(1,-1), false);
+    return esc(p);
+  }).join('');
+}
+
+/* ---------- 标签切换 ---------- */
+function showTab(name){
+  const map = {upload: 'Upload', browse: 'Browse', integrate: 'Integrate'};
+  for(const k of Object.keys(map)){
+    const btn = $('#tab'+map[k]), view = $('#view'+map[k]);
+    if(btn) btn.classList.toggle('on', k === name);
+    if(view) view.style.display = (k === name) ? '' : 'none';
+  }
+  if(name === 'browse') loadKBSubjects();
+  if(name === 'integrate') loadIntegration();
+}
+$('#tabUpload').addEventListener('click', ()=>showTab('upload'));
+$('#tabBrowse').addEventListener('click', ()=>showTab('browse'));
+$('#tabIntegrate').addEventListener('click', ()=>showTab('integrate'));
+
+/* ---------- 知识整合 ---------- */
+function loadIntegration(){
+  const s = ($('#subject') && $('#subject').value) || '海洋技术';
+  $('#integration').innerHTML = '<p class="hint">加载中…</p>';
+  fetch('/api/kb/integration?subject='+encodeURIComponent(s)).then(r=>r.json()).then(d=>{
+    const th = d.threads || [];
+    if(!th.length){
+      $('#integration').innerHTML = '<p class="hint">还没有整合结果。<br>需要至少两门课抽完知识点，然后在 02-管线 目录运行 <code>run.py integrate</code>。</p>';
+      return;
+    }
+    let h = `<p class="hint" style="margin-bottom:12px">涉及课程：${(d.courses||[]).map(esc).join('、')}　·　共 <b>${th.length}</b> 条主题线</p>`;
+    h += th.map(t=>{
+      const items = (t.items||[]).map(it=>`<span class="itag">${esc(it.course)}</span>${esc(it.kp)}`).join('　');
+      return `<div class="thread">
+        <div class="th-title">🔗 ${esc(t.theme)}</div>
+        ${t.structure?`<div class="th-struct"><b>共同结构：</b>${esc(t.structure)}</div>`:''}
+        <div class="th-items">${items}</div>
+        ${t.insight?`<div class="th-insight">💡 ${esc(t.insight)}</div>`:''}
+        ${t.value?`<div class="th-value">📘 <b>学习价值：</b>${esc(t.value)}</div>`:''}
+      </div>`;
+    }).join('');
+    if(d.learning_path) h += `<div class="thread"><div class="th-title">🧭 跨课程学习路线</div><div class="th-insight">${esc(d.learning_path)}</div></div>`;
+    $('#integration').innerHTML = h;
+  });
+}
+
+/* ================= 上传 ================= */
+function loadSubjects(){
+  fetch('/api/subjects').then(r=>r.json()).then(list=>{
+    const el=$('#subject'); el.innerHTML='';
+    list.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; el.appendChild(o); });
+    loadCourses();
+  });
+}
+function loadCourses(){
+  fetch('/api/courses?subject='+encodeURIComponent($('#subject').value)).then(r=>r.json()).then(list=>{
+    const dl=$('#courses'); dl.innerHTML='';
+    list.forEach(c=>{ const o=document.createElement('option'); o.value=c; dl.appendChild(o); });
+  });
+}
+function loadReceipt(){ fetch('/api/receipt').then(r=>r.json()).then(d=>{ $('#receipt').textContent=d.text; }); }
+$('#subject').addEventListener('change', loadCourses);
+$('#refreshReceipt').addEventListener('click', loadReceipt);
+
+const drop=$('#drop'), input=$('#files');
+drop.addEventListener('click', ()=>input.click());
+input.addEventListener('change', ()=>{ files=Array.from(input.files); renderFiles(); });
+['dragover','dragenter'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add('hover');}));
+['dragleave','drop'].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove('hover');}));
+drop.addEventListener('drop', e=>{ files=Array.from(e.dataTransfer.files); input.files=e.dataTransfer.files; renderFiles(); });
+function renderFiles(){ $('#filelist').innerHTML = files.map((f,i)=>`<div>${i+1}. ${esc(f.name)}（${(f.size/1024/1024).toFixed(1)} MB）</div>`).join(''); }
+
+$('#btn').addEventListener('click', async ()=>{
+  if(!files.length){ alert('先选文件'); return; }
+  const fd=new FormData();
+  fd.append('subject', $('#subject').value);
+  fd.append('course', $('#course').value.trim() || '未分类');
+  fd.append('uploader', $('#uploader').value.trim());
+  files.forEach(f=>fd.append('files', f));
+  const btn=$('#btn'); btn.disabled=true; btn.textContent='上传中…';
+  try{
+    const resp=await fetch('/api/upload',{method:'POST',body:fd});
+    const data=await resp.json();
+    if(data.error){ alert(data.error); return; }
+    const cls=s=>s.startsWith('新入库')?'ok':s.startsWith('重复')?'dup':'err';
+    $('#resultTable').innerHTML=`<table><tr><th>文件</th><th>结果</th></tr>${
+      data.results.map(r=>`<tr><td>${esc(r.file)}</td><td class="${cls(r.status)}">${esc(r.status)}</td></tr>`).join('')}</table>`;
+    $('#result').style.display='block';
+    loadReceipt(); loadCourses(); files=[]; input.value=''; renderFiles();
+  }catch(e){ alert('上传失败：'+e.message); }
+  finally{ btn.disabled=false; btn.textContent='上传'; }
+});
+
+/* ================= 浏览 ================= */
+let mmInstance = null, kpIndex = [], curCourse = '', curSubject = '海洋技术', curDocId = '';
+function showLightbox(src){ $('#lbimg').src = src; $('#lightbox').style.display='flex'; }
+
+function loadKBSubjects(){
+  fetch('/api/subjects').then(r=>r.json()).then(list=>{
+    const el=$('#bSubject'); el.innerHTML='';
+    list.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; el.appendChild(o); });
+    loadKBCourses();
+  });
+}
+function loadKBCourses(){
+  fetch('/api/kb/courses?subject='+encodeURIComponent($('#bSubject').value)).then(r=>r.json()).then(list=>{
+    const el=$('#bCourse'); el.innerHTML='';
+    list.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; el.appendChild(o); });
+    loadChapters();
+  });
+}
+function loadChapters(){
+  const c=$('#bCourse').value; curCourse = c;
+  if(!c){ $('#mindmap').innerHTML='<p class="hint">还没有课程，先去上传</p>'; return; }
+  const s=$('#bSubject').value;
+  fetch('/api/kb/mindmap?subject='+encodeURIComponent(s)+'&course='+encodeURIComponent(c))
+    .then(r=>r.json()).then(renderMindmap);
+  fetch('/api/kb/hierarchy?subject='+encodeURIComponent(s)+'&course='+encodeURIComponent(c))
+    .then(r=>r.json()).then(renderHierarchy);
+  fetch('/api/kb/chapters?subject='+encodeURIComponent(s)+'&course='+encodeURIComponent(c))
+    .then(r=>r.json()).then(list=>{ renderKPChapters(list); });
+  fetch('/api/kb/exam?subject='+encodeURIComponent(s)+'&course='+encodeURIComponent(c))
+    .then(r=>r.json()).then(renderExam);
+  fetch('/api/kb/guide?subject='+encodeURIComponent(s)+'&course='+encodeURIComponent(c))
+    .then(r=>r.json()).then(renderGuide);
+}
+
+/* --- 学习指南（考点分级 + 每章串讲） --- */
+function renderGuide(d){
+  const chs = (d && d.chapters) || [];
+  if(!chs.length){
+    $('#guideView').innerHTML = '<p class="hint">这门课还没有学习指南。<br>顺序：先把试卷放到 <code>00-原始资料/…/课程名/期末题/</code>，'
+      + '然后跑 <code>run.py exam</code>（考点统计），再跑 <code>run.py guide</code>（分级+串讲）。</p>';
+    return;
+  }
+  let h = '';
+  chs.forEach(ch=>{
+    const t = ch.tier || '一般';
+    h += `<div class="gchap">
+      <div class="ghead"><span class="gname">${esc(ch.name)}</span>
+        <span class="gtier tier-${esc(t)}">${esc(t)}</span>
+        ${ch.optional?'<span class="gtier tier-选看">教材选学</span>':''}
+        <span class="gkpr">${ch.kp_count||0} 个知识点 ▾</span>
+      </div>
+      <div class="gbody" style="display:none">
+        ${ch.exam_summary?`<div class="gsummary">📊 ${esc(ch.exam_summary)}</div>`:''}
+        ${ch.guide?`<div class="gguide">📖 <b>本章串讲</b>\n${esc(ch.guide)}</div>`:''}
+        ${(ch.must_solve||[]).length?`<div class="gnote">✅ <b>必须会做：</b>${ch.must_solve.map(esc).join('；')}</div>`:''}
+        ${ch.might_skip&&ch.might_skip!=='无'?`<div class="gnote">⏭ <b>可以略过：</b>${esc(ch.might_skip)}</div>`:''}
+        <div style="margin-top:9px">${(ch.kps||[]).map(k=>`
+          <div class="gkp">
+            <span class="gkpt tier-${esc(k.tier||'一般')}">${esc(k.tier||'一般')}</span>
+            <span class="gkpname kp-ref" data-name="${esc(k.name)}">${esc(k.name)}</span>
+            <span class="gkpr">${esc(k.reason||'')}</span>
+          </div>`).join('')}</div>
+      </div>
+    </div>`;
+  });
+  $('#guideView').innerHTML = h;
+  document.querySelectorAll('#guideView .ghead').forEach(hd=>hd.addEventListener('click', ()=>{
+    const b = hd.parentNode.querySelector('.gbody');
+    const c = hd.querySelector('.gkpr');
+    const open = b.style.display !== 'none';
+    b.style.display = open ? 'none' : '';
+    if(c) c.textContent = c.textContent.replace(open?'▴':'▾', open?'▾':'▴');
+  }));
+  document.querySelectorAll('#guideView .kp-ref').forEach(el=>el.addEventListener('click', (ev)=>{
+    ev.stopPropagation(); jumpToKP(el.dataset.name);
+  }));
+}
+
+/* --- 考点（期末试卷分析） --- */
+function fmtSteps(text){
+  const t = String(text || '').trim();
+  if(!t) return [];
+  let parts = t.split(/(?=[①②③④⑤⑥⑦⑧⑨⑩])|(?=第[一二三四五六七八九十]+步)|(?=(?:^|[；;。\s])\d{1,2}[．.、)）])/).map(s=>s.trim()).filter(Boolean);
+  if(parts.length <= 1) parts = t.split(/[；;]/).map(s=>s.trim()).filter(Boolean);
+  if(parts.length <= 1) parts = t.split(/(?<=。)/).map(s=>s.trim()).filter(Boolean);
+  return parts.length ? parts : [t];
+}
+function renderExam(d){
+  if(!d || !(d.top_kps||[]).length){
+    $('#examView').innerHTML = '<p class="hint">这门课还没有试卷分析。<br>把期末试卷 PDF 放到 <code>00-原始资料/海洋技术/课程名/exams/</code>，'
+      + '然后在 02-管线 目录运行 <code>run.py exam</code> 生成。</p>';
+    return;
+  }
+  let h = `<p class="hint" style="margin-bottom:4px">试卷：${(d.papers||[]).map(esc).join('、')}</p>`;
+  h += `<p class="hint" style="margin-bottom:12px">共 <b>${d.question_count||0}</b> 道题　·　命中 <b>${d.top_kps.length}</b> 个知识点</p>`;
+  if((d.question_types||[]).length){
+    h += '<div class="exsec">📋 题型分布</div><div class="tchips">' +
+      d.question_types.map(t=>`<span class="tchip">${esc(t.type)} ${t.count}题 / ${t.points}分</span>`).join('') + '</div>';
+  }
+  h += '<div class="exsec">🔥 重要知识点排序（按期末分值权重，点知识点跳到详情）</div>';
+  h += d.top_kps.map(k=>{
+    const bar = Math.max(3, Math.round((k.weight||0)*100));
+    const types = Object.entries(k.types||{}).map(([t,c])=>`${esc(t)}×${c}`).join('、');
+    const pats = (k.patterns||[]).map(esc).join('<br>');
+    const sols = (k.solutions||[]).map((s,si)=>{
+      const steps = fmtSteps(s);
+      return `<div class="exsol">
+        <div class="exsol-h">🔧 解法${(k.solutions||[]).length>1?' '+String(si+1):''}　<span style="font-weight:400;color:#64748b">（${steps.length} 步）</span></div>
+        <ol class="exsteps">${steps.map(st=>`<li>${esc(st)}</li>`).join('')}</ol>
+      </div>`;
+    }).join('');
+    return `<div class="exkp">
+      <div class="exhead">
+        <span class="exrank">${k.rank}</span>
+        <span class="exname kp-ref" data-name="${esc(k.kp)}">${esc(k.kp)}</span>
+        <span class="expts">${k.points}分 / ${k.count}次</span>
+      </div>
+      <div class="exbar"><i style="width:${bar}%"></i></div>
+      ${types?`<div class="exmeta">📝 题型：${types}</div>`:''}
+      ${pats?`<div class="expat">🎯 <b>考法</b><br>${pats}</div>`:''}
+      ${sols}
+    </div>`;
+  }).join('');
+  $('#examView').innerHTML = h;
+  document.querySelectorAll('#examView .kp-ref').forEach(el=>el.addEventListener('click', ()=>jumpToKP(el.dataset.name)));
+}
+
+/* --- 层次导航（章 → 小节 → 知识点，带逻辑递进） --- */
+let hierData = null;
+function renderHierarchy(h){
+  hierData = h;
+  const chs = (h && h.chapters) || [];
+  if(!chs.length){
+    $('#hierNav').innerHTML = '<p class="hint">这门课还没有层次结构。<br>在 02-管线 目录运行 <code>run.py hierarchy</code> 生成。</p>';
+    return;
+  }
+  let html = '';
+  if(h.flow) html += `<div class="flowline">🧭 <b>逻辑主线：</b>${esc(h.flow)}</div>`;
+  chs.forEach((ch, i)=>{
+    const nk = (ch.sections||[]).reduce((a,s)=>a+((s.kps||[]).length),0);
+    html += `<div class="hnode" data-doc="${esc(ch.doc_id)}">
+      <div class="hhead">
+        <span class="hnum">${i+1}</span>
+        <span class="hname">${esc(ch.name)}</span>
+        ${ch.role?`<span class="hrole">${esc(ch.role)}</span>`:''}
+        <span class="hcount">${nk} 个 ▾</span>
+      </div>
+      <div class="hsections" style="display:none"></div>
+    </div>`;
+    if(ch.logic_to_next) html += `<div class="hlogic">↓ ${esc(ch.logic_to_next)}</div>`;
+  });
+  $('#hierNav').innerHTML = html;
+  document.querySelectorAll('.hnode .hhead').forEach(head=>{
+    head.addEventListener('click', ()=>toggleChapter(head.parentNode));
+  });
+}
+function toggleChapter(node){
+  const box = node.querySelector('.hsections');
+  const cnt = node.querySelector('.hcount');
+  if(box.style.display !== 'none'){
+    box.style.display = 'none';
+    if(cnt) cnt.textContent = cnt.textContent.replace('▴','▾');
+    return;
+  }
+  const ch = hierData && (hierData.chapters||[]).find(c=>c.doc_id === node.dataset.doc);
+  if(!ch) return;
+  let s = '';
+  (ch.sections||[]).forEach(sec=>{
+    s += `<div class="snode" data-kp="${esc((sec.kps||[])[0]||'')}">
+        <span class="sname">${esc(sec.name)}</span>
+        <span class="skps">${(sec.kps||[]).length} 个 →</span>
+      </div>`;
+    if(sec.logic_to_next) s += `<div class="slogic">↓ ${esc(sec.logic_to_next)}</div>`;
+  });
+  box.innerHTML = s || '<p class="hint">这一章还没有小节数据</p>';
+  box.style.display = '';
+  if(cnt) cnt.textContent = cnt.textContent.replace('▾','▴');
+  box.querySelectorAll('.snode').forEach(nd=>nd.addEventListener('click', (ev)=>{
+    ev.stopPropagation();
+    if(nd.dataset.kp) jumpToKP(nd.dataset.kp);
+  }));
+}
+
+/* --- 思维导图（markmap 交互式树状图） --- */
+function renderMindmap(mm){
+  const norm = (mm.chapters||[]).filter(c=>(c.knowledge_points||[]).length);
+  if(!norm.length){ $('#mindmap').innerHTML='<p class="hint">该课程还没有抽取知识点。先上传课件，再双击「抽取知识点.bat」。</p>'; return; }
+  let md = `# ${mm.course||''}\n`;
+  for(const ch of norm){
+    md += `## ${ch.name}\n`;
+    for(const kp of ch.knowledge_points) md += `- ${kp}\n`;
+  }
+  $('#mindmap').innerHTML = '<svg id="mmsvg"></svg>';
+  if(!window.markmap || !window.markmap.Markmap){
+    $('#mindmap').innerHTML = '<p class="hint">脑图库未加载（检查 /static/ 下的 markmap 文件）</p>'; return;
+  }
+  try{
+    const { Transformer, Markmap } = window.markmap;
+    const { root } = new Transformer().transform(md);
+    mmInstance = Markmap.create('#mmsvg', {
+      duration: 250, spacingVertical: 8, spacingHorizontal: 100,
+      initialExpandLevel: -1, maxWidth: 260
+    }, root);
+    setTimeout(()=>{ try{ mmInstance.fit(); }catch(e){} }, 300);
+    // 点节点 → 跳到对应知识点
+    $('#mmsvg').addEventListener('click', (e)=>{
+      const node = e.target.closest('g');
+      if(!node) return;
+      const t = (node.textContent || '').trim().split('\n')[0].trim();
+      if(t && kpIndex.some(k=>k.name === t)) jumpToKP(t);
+    });
+  }catch(e){
+    $('#mindmap').innerHTML = '<p class="hint">脑图渲染失败：'+esc(e.message)+'</p>';
+  }
+}
+$('#mmFit').addEventListener('click', ()=>{ try{ mmInstance && mmInstance.fit(); }catch(e){} });
+
+/* --- 知识点 --- */
+function renderKPChapters(list){
+  const withKb = list.filter(c=>c.has_knowledge);
+  if(!withKb.length){ $('#kpChapters').innerHTML='<p class="hint">该课程还没有抽取知识点。</p>'; $('#kpList').innerHTML=''; return; }
+  $('#kpChapters').innerHTML = withKb.map(ch=>{
+    const badges = Object.entries(ch.signals||{}).map(([k,v])=>`<span class="badge">${esc(k)}×${v}</span>`).join('');
+    return `<div class="chapter" data-doc="${esc(ch.doc_id)}"><div class="t">📘 ${esc(ch.title)}</div><div class="m">${ch.pages} 页 <span class="badge kb">已抽知识点</span>${badges}</div></div>`;
+  }).join('');
+  document.querySelectorAll('#kpChapters .chapter').forEach(el=>el.addEventListener('click', ()=>{
+    document.querySelectorAll('#kpChapters .chapter').forEach(x=>x.classList.remove('on'));
+    el.classList.add('on'); loadKP(el.dataset.doc);
+  }));
+  const first = $('#kpChapters .chapter'); if(first) first.click();
+}
+function renderKP(kp, idx){
+  let h = `<div class="kp" id="kp-${idx}" data-name="${esc(kp.name)}">`;
+  h += `<div class="kp-head"><span class="ktype">${esc(kp.type||'')}</span>${esc(kp.name)}</div>`;
+  if(kp.concept) h += `<div class="kp-concept">${withInlineTex(kp.concept)}</div>`;
+  for(const f of (kp.formulas||[])){
+    h += `<div class="kp-formula">${renderTex(f.latex, true)}`;
+    if((f.symbols||[]).length){
+      h += '<div class="fsym">' + f.symbols.map(s=>`<span><b>${renderTex(s.symbol, false)}</b>：${esc(s.meaning||'')}${s.unit?`（${esc(s.unit)}）`:''}</span>`).join('') + '</div>';
+    }
+    if(f.usage) h += `<div class="fmeta">▸ 怎么用：${esc(f.usage)}</div>`;
+    if(f.significance) h += `<div class="fmeta">▸ 意义：${esc(f.significance)}</div>`;
+    h += '</div>';
+  }
+  for(const e of (kp.examples||[])){
+    h += `<div class="kp-example"><b>例</b> ${withInlineTex(e.question||'')}`;
+    if(e.solution) h += `<div class="sol">解：${withInlineTex(e.solution)}</div>`;
+    h += '</div>';
+  }
+  const refs = (arr, label) => (arr||[]).length
+    ? `<div class="kp-link"><b>${label}：</b>${arr.map(n=>`<span class="kp-ref" data-name="${esc(n)}">${esc(n)}</span>`).join('、')}</div>` : '';
+  h += refs(kp.prerequisites, '前置');
+  h += refs(kp.related, '相关');
+  // 示意图（程序生成）
+  if(kp.diagram && kp.diagram.kind){
+    const q = `subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}&doc=${encodeURIComponent(curDocId)}&name=${encodeURIComponent(kp.name)}`;
+    h += `<div class="diagram"><img src="/api/kb/diagram?${q}" loading="lazy" onerror="this.parentNode.style.display='none'">`;
+    if(kp.diagram.caption) h += `<div class="cap">${esc(kp.diagram.caption)}</div>`;
+    h += '</div>';
+  }
+  // 来源课件页
+  if((kp.pages||[]).length){
+    const base = `subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}&doc_id=${encodeURIComponent(curDocId)}`;
+    h += '<div class="kp-pages"><div class="plabel">📄 来源课件页（点击放大）</div>';
+    for(const n of kp.pages.slice(0,4)) h += `<img src="/api/kb/page?${base}&n=${n}" loading="lazy" onclick="showLightbox(this.src)">`;
+    h += '</div>';
+  }
+  return h + '</div>';
+}
+function loadKP(docId){
+  const s=$('#bSubject').value, c=$('#bCourse').value;
+  curSubject = s; curCourse = c; curDocId = docId;
+  $('#kpList').innerHTML = '<p class="hint">加载中…</p>';
+  return fetch(`/api/kb/knowledge?subject=${encodeURIComponent(s)}&course=${encodeURIComponent(c)}&doc_id=${encodeURIComponent(docId)}`)
+    .then(r=>r.json()).then(d=>{
+      if(d.error){ $('#kpList').innerHTML=`<p class="hint">${esc(d.error)}</p>`; kpIndex=[]; return; }
+      const kps = d.knowledge_points || [];
+      kpIndex = kps;
+      // 标记当前选中的章节
+      document.querySelectorAll('#kpChapters .chapter').forEach(x=>{
+        x.classList.toggle('on', x.dataset.doc === docId);
+      });
+      $('#kpList').innerHTML = `<p class="hint" style="margin-bottom:10px">共 ${kps.length} 个知识点（点「前置/相关」可跳转）</p>` + kps.map(renderKP).join('');
+      // 绑定知识点跳转
+      document.querySelectorAll('#kpList .kp-ref').forEach(el=>el.addEventListener('click', ()=>jumpToKP(el.dataset.name)));
+    });
+}
+function findKpEl(name){
+  return Array.from(document.querySelectorAll('#kpList .kp')).find(el=>el.dataset.name === name) || null;
+}
+async function jumpToKP(name){
+  name = (name||'').trim();
+  if(!name) return;
+  const local = findKpEl(name);
+  if(local){ setMode('modeKP'); local.classList.add('hl'); local.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(()=>local.classList.remove('hl'), 2500); return; }
+  const s = ($('#bSubject')&&$('#bSubject').value)||'海洋技术';
+  const c = ($('#bCourse')&&$('#bCourse').value)||'';
+  let d = {status:'missing', name:name};
+  try{
+    d = await fetch(`/api/kb/resolve?subject=${encodeURIComponent(s)}&course=${encodeURIComponent(c)}&name=${encodeURIComponent(name)}`).then(x=>x.json());
+  }catch(e){}
+
+  if(d.status === 'exact' || d.status === 'fuzzy'){
+    if(!d.course || d.course === c){
+      setMode('modeKP');
+      await loadKP(d.doc_id);
+      setTimeout(()=>{ const t=findKpEl(d.name); if(t){ t.classList.add('hl'); t.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>t.classList.remove('hl'),2500);} }, 500);
+      return;
+    }
+    showKpModal(`<div class="km-title">🔗 这个知识点在另一门课里</div>
+      <p class="km-p">「<b>${esc(d.name)}</b>」属于《<b>${esc(d.course)}</b>》${d.status==='fuzzy'?'　<span class="km-note-inline">（名称相近，自动匹配）</span>':''}</p>
+      <button class="km-btn" data-goto-course="${esc(d.course)}" data-goto-doc="${esc(d.doc_id)}" data-goto-kp="${esc(d.name)}">切到《${esc(d.course)}》去看 →</button>`);
+    return;
+  }
+  if(d.status === 'supplement'){
+    const k = d.card || {};
+    showKpModal(`<div class="km-title">📘 ${esc(name)}　<span class="km-badge">${esc(k.source||'AI 补充')}</span></div>
+      ${k.concept?`<div class="km-sec"><b>是什么</b><p>${esc(k.concept)}</p></div>`:''}
+      ${(k.formulas||[]).length?`<div class="km-sec"><b>关键公式</b>${k.formulas.map(f=>`<div class="km-tex">${renderTex(f,true)}</div>`).join('')}</div>`:''}
+      ${k.example?`<div class="km-sec"><b>最小例子</b><p>${esc(k.example)}</p></div>`:''}
+      ${k.pitfall && k.pitfall!=='无'?`<div class="km-sec"><b>易错点</b><p>${esc(k.pitfall)}</p></div>`:''}
+      ${(k.prereq||[]).length?`<div class="km-sec"><b>先修</b><p>${k.prereq.map(esc).join('、')}</p></div>`:''}
+      ${suggestsHtml(d.suggests)}
+      <p class="km-note">⚠️ 本卡片由 AI 生成，<b>未经老师确认</b>，仅供快速回忆；考试请以教材/课件为准。</p>`);
+    return;
+  }
+  showKpModal(`<div class="km-title">❓ 「${esc(name)}」知识库里还没有</div>
+    <p class="km-p">它可能是一个<b>先修概念</b>（来自高等数学 / 中学知识），也可能是本课程尚未抽取的章节。</p>
+    ${suggestsHtml(d.suggests)}
+    <p class="km-note">在 02-管线 目录运行 <code>run.py supplements</code>，可让 AI 联网补充这个概念。</p>`);
+}
+function suggestsHtml(sg){
+  if(!sg || !sg.length) return '';
+  return `<div class="km-sec"><b>你是不是要找</b><div class="km-sug">${
+    sg.map(s=>`<span class="kp-ref" data-jump="1" data-name="${esc(s.name)}" data-course="${esc(s.course)}">${esc(s.name)}　<i>《${esc(s.course)}》</i></span>`).join('')
+  }</div></div>`;
+}
+function showKpModal(html){
+  $('#kpModalBody').innerHTML = html;
+  $('#kpModal').style.display = 'flex';
+  document.querySelectorAll('#kpModalBody .kp-ref[data-jump]').forEach(el=>{
+    el.addEventListener('click', (ev)=>{ ev.stopPropagation(); closeKpModal(); jumpToKP(el.dataset.name); });
+  });
+  document.querySelectorAll('#kpModalBody [data-goto-course]').forEach(el=>{
+    el.addEventListener('click', ()=>{ switchCourseTo(el.dataset.gotoCourse, el.dataset.gotoDoc, el.dataset.gotoKp); });
+  });
+}
+function closeKpModal(){ $('#kpModal').style.display = 'none'; }
+async function switchCourseTo(course, docId, kpName){
+  closeKpModal();
+  if($('#bCourse').value !== course){
+    $('#bCourse').value = course;
+    loadChapters();
+    await new Promise(r=>setTimeout(r, 1200));
+  }
+  setMode('modeKP');
+  await loadKP(docId);
+  setTimeout(()=>{ const t=findKpEl(kpName); if(t){ t.classList.add('hl'); t.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>t.classList.remove('hl'),2500);} }, 500);
+}
+
+/* --- 模式切换 --- */
+function setMode(m){
+  const all = ['modeGuide','modeExam','modeHier','modeMind','modeKP'];
+  const panes = {modeGuide:'paneGuide',modeExam:'paneExam',modeHier:'paneHier',modeMind:'paneMind',modeKP:'paneKP'};
+  for(const id of all) $('#'+id).classList.remove('on');
+  for(const id of Object.values(panes)) $('#'+id).style.display='none';
+  $('#'+m).classList.add('on');
+  $('#'+panes[m]).style.display='';
+  if(m==='modeMind' && mmInstance){ setTimeout(()=>{ try{ mmInstance.fit(); }catch(e){} }, 200); }
+}
+$('#modeGuide').addEventListener('click', ()=>setMode('modeGuide'));
+$('#modeExam').addEventListener('click', ()=>setMode('modeExam'));
+$('#modeHier').addEventListener('click', ()=>setMode('modeHier'));
+$('#modeMind').addEventListener('click', ()=>setMode('modeMind'));
+$('#modeKP').addEventListener('click', ()=>setMode('modeKP'));
+$('#bSubject').addEventListener('change', loadKBCourses);
+$('#bCourse').addEventListener('change', loadChapters);
+
+loadSubjects();
+loadReceipt();
+</script>
+</body>
+</html>

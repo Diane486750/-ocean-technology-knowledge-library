@@ -1,0 +1,1 @@
+{"status": "supplement", "name": "快速原型（Rapid Prototyping）", "card": {"name": "快速原型（Rapid Prototyping）", "concept": "快速原型是先用低成本、可运行的最简版本验证需求或技术方案，再迭代完善。它用于尽早发现设计问题、降低开发风险。", "formulas": [], "example": "先做一个只能登录和发帖的网页 demo 给用户试用，再决定完整功能。", "pitfall": "把原型直接当最终产品上线；原型目标不清导致反复重做。", "prereq": ["需求分析", "基本编程/界面搭建"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

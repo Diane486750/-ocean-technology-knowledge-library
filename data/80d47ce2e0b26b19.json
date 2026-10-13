@@ -1,0 +1,1 @@
+{"status": "supplement", "name": "特解", "card": {"name": "特解", "concept": "特解是非齐次线性方程组 Ax=b 的一个具体解，它本身不含任意常数。求非齐次通解时，只需要先找到任意一个特解，再加上对应齐次方程组的通解。", "formulas": ["A\\eta^*=b", "x=\\eta^*+x_h,\\quad Ax_h=0"], "example": "方程组 x+y=3 的一个特解是 (1,2)^T。", "pitfall": "把含有自由参数的通解误当成特解；特解不唯一，但只需取一个即可。", "prereq": ["线性方程组", "解向量"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}
