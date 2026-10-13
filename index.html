@@ -299,6 +299,14 @@ if(STATIC_MODE){
     }
     return _origFetch(u, o);
   };
+  // 静态站是「只读浏览端」：隐藏上传页，默认进浏览课程
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const ut = document.getElementById('tabUpload');
+    if(ut) ut.style.display = 'none';
+    const uv = document.getElementById('viewUpload');
+    if(uv) uv.style.display = 'none';
+    try { if(typeof showTab === 'function') showTab('browse'); } catch(e){}
+  });
 }
 let files = [];
 
