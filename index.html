@@ -141,6 +141,10 @@
   .exq-h { font-size: 11.5px; color: #64748b; margin-bottom: 5px; }
   .exq-t { background: #e2e8f0; color: #475569; border-radius: 4px; padding: 1px 6px; margin-left: 4px; }
   .exq-b { font-size: 12.8px; line-height: 1.8; color: #334155; white-space: pre-wrap; word-break: break-word; }
+  .exq-kps { margin-top: 7px; padding-top: 6px; border-top: 1px dashed #e2e8f0; line-height: 2.1; }
+  .exq-kps-t { font-size: 11.5px; color: #94a3b8; margin-right: 4px; }
+  .exq-kp { display: inline-block; background: #dbeafe; color: #1e40af; border-radius: 5px; padding: 2px 8px; font-size: 12px; margin: 0 5px 3px 0; cursor: pointer; }
+  .exq-kp:hover { background: #bfdbfe; }
 
   /* 学习指南 */
   .gchap { border: 2px solid #e5e7eb; border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
@@ -529,6 +533,16 @@ function renderGuide(d){
 }
 
 /* --- 考点（期末试卷分析） --- */
+/* 把编程风格的矩阵 [[a,b],[c,d]] 转成真正的数学矩阵 */
+function fmtMatrix(s){
+  const re = /\[\s*(\[[^\[\]]*\]\s*(?:,\s*\[[^\[\]]*\]\s*)*)\]/g;
+  return String(s || '').replace(re, (m, inner) => {
+    const rows = inner.split(/\s*\]\s*,\s*\[/).map(r => r.replace(/[\[\]]/g, '').trim());
+    if(!rows.length) return m;
+    const body = rows.map(r => r.replace(/\s*,\s*/g, ' & ')).join(' \\\\ ');
+    return '$\\begin{bmatrix}' + body + '\\end{bmatrix}$';
+  });
+}
 function fmtSteps(text){
   const t = String(text || '').trim();
   if(!t) return [];
@@ -572,7 +586,7 @@ function renderExam(d){
       const steps = fmtSteps(s);
       return `<div class="exsol">
         <div class="exsol-h">🔧 解法${(k.solutions||[]).length>1?' '+String(si+1):''}　<span style="font-weight:400;color:#64748b">（${steps.length} 步）</span></div>
-        <ol class="exsteps">${steps.map(st=>`<li>${esc(st)}</li>`).join('')}</ol>
+        <ol class="exsteps">${steps.map(st=>`<li>${withInlineTex(fmtMatrix(st))}</li>`).join('')}</ol>
       </div>`;
     }).join('');
     return `<div class="exkp">
@@ -585,11 +599,14 @@ function renderExam(d){
       ${types?`<div class="exmeta">📝 题型：${types}</div>`:''}
       ${pats?`<div class="expat">🎯 <b>考法</b><br>${pats}</div>`:''}
       ${sols}
-      ${shown.length?`<div class="exsec" style="font-size:12.5px;margin:10px 0 5px">📄 考过的真题（${mine.length} 道）</div>`:''}
+      ${shown.length?`<div class="exsec" style="font-size:12.5px;margin:10px 0 5px">📄 考过的真题（${mine.length} 道，题下知识点可点击）</div>`:''}
       ${shown.map(q=>`<div class="exq">
           <div class="exq-h">${esc(q.source||'')}　第 ${esc(q.no||'')} 题
             <span class="exq-t">${esc(q.type||'')}${q.points?' '+Math.round(q.points)+'分':''}</span></div>
           <div class="exq-b">${esc((q.text||'').slice(0,400))}${(q.text||'').length>400?' …':''}</div>
+          ${(q.kps||[]).length?`<div class="exq-kps"><span class="exq-kps-t">考查：</span>${
+            q.kps.map(n=>`<span class="kp-ref exq-kp" data-name="${esc(n)}">${esc(n)}</span>`).join('')
+          }</div>`:''}
         </div>`).join('')}
       ${more>0?`<div class="hint" style="margin-top:5px">…… 还有 ${more} 道同类题</div>`:''}
     </div>`;
