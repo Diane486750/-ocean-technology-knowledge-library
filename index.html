@@ -533,6 +533,27 @@ function renderGuide(d){
 }
 
 /* --- 考点（期末试卷分析） --- */
+/* 把 ^2 / ^{3-1} / ^{-1} 转成真正的上标（Unicode 乘方） */
+const SUP_MAP = {'0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹',
+  '-':'⁻','+':'⁺','(':'⁽',')':'⁾','n':'ⁿ','i':'ⁱ','k':'ᵏ','m':'ᵐ','x':'ˣ','r':'ʳ','s':'ˢ','t':'ᵗ',
+  'T':'ᵀ','a':'ᵃ','b':'ᵇ','c':'ᶜ','d':'ᵈ','e':'ᵉ','j':'ʲ','p':'ᵖ','u':'ᵘ','v':'ᵛ','w':'ʷ','y':'ʸ','z':'ᶻ'};
+function _supify(exp){
+  let out = '';
+  for(const ch of String(exp)){
+    if(SUP_MAP[ch] === undefined) return null;   // 有转不了的字符就整体放弃，保持原样
+    out += SUP_MAP[ch];
+  }
+  return out;
+}
+function fmtPower(s){
+  // 只取「{...}」「(...)」或单个字符作指数，避免 x^2y 把 2y 都吃掉
+  return String(s || '').replace(/\^\s*(\{[^}]{1,12}\}|\([^()]{1,8}\)|[A-Za-z0-9])/g, (m, g) => {
+    let exp = g;
+    if(exp.startsWith('{') || exp.startsWith('(')) exp = exp.slice(1, -1);
+    const sup = _supify(exp);
+    return sup === null ? m : sup;
+  });
+}
 /* 把编程风格的矩阵 [[a,b],[c,d]] 转成真正的数学矩阵 */
 function fmtMatrix(s){
   const re = /\[\s*(\[[^\[\]]*\]\s*(?:,\s*\[[^\[\]]*\]\s*)*)\]/g;
@@ -592,7 +613,7 @@ function renderExam(d){
         <div class="exq-b">${esc((q.text||'').slice(0, 420))}${(q.text||'').length>420?' …':''}</div>
         ${steps.length?`<div class="exsol">
           <div class="exsol-h">🔧 解答　<span style="font-weight:400;color:#64748b">（${steps.length} 步）</span></div>
-          <ol class="exsteps">${steps.map(st=>`<li>${withInlineTex(fmtMatrix(st))}</li>`).join('')}</ol>
+          <ol class="exsteps">${steps.map(st=>`<li>${withInlineTex(fmtPower(fmtMatrix(st)))}</li>`).join('')}</ol>
         </div>`:''}
         ${(q.kps||[]).length?`<div class="exq-kps"><span class="exq-kps-t">考查知识点：</span>${
           q.kps.map(n=>`<span class="kp-ref exq-kp" data-name="${esc(n)}">${esc(n)}</span>`).join('')
@@ -615,7 +636,7 @@ function renderExam(d){
       </div>
       <div class="exbar"><i style="width:${bar}%"></i></div>
       ${types?`<div class="exmeta">📝 题型：${types}</div>`:''}
-      ${pats?`<div class="expat">🎯 <b>考法</b><br>${pats}</div>`:''}
+      ${pats?`<div class="expat">🎯 <b>考法</b><br>${withInlineTex(fmtPower(pats.replace(/<br>/g,'　')))}</div>`:''}
       ${shown.length?`<div class="exsec" style="font-size:12.5px;margin:11px 0 5px">📄 考过的真题（${mine.length} 道）</div>`:''}
       ${qBlocks}
       ${fallbackSols}
