@@ -582,13 +582,31 @@ function renderExam(d){
     const mine = qs.filter(q => (q.kps||[]).includes(k.kp));
     const shown = mine.slice(0, 4);
     const more = mine.length - shown.length;
-    const sols = (k.solutions||[]).map((s,si)=>{
+    // 每道真题一块：题目 → 解答 → 知识点（用户要求的顺序）
+    const qBlocks = shown.map(q=>{
+      const sol = (q.solution||'').trim() || (k.solutions||[])[0] || '';
+      const steps = fmtSteps(sol);
+      return `<div class="exq">
+        <div class="exq-h">📄 ${esc(q.source||'')} · 第 ${esc(q.no||'')} 题
+          <span class="exq-t">${esc(q.type||'')}${q.points?' '+Math.round(q.points)+'分':''}</span></div>
+        <div class="exq-b">${esc((q.text||'').slice(0, 420))}${(q.text||'').length>420?' …':''}</div>
+        ${steps.length?`<div class="exsol">
+          <div class="exsol-h">🔧 解答　<span style="font-weight:400;color:#64748b">（${steps.length} 步）</span></div>
+          <ol class="exsteps">${steps.map(st=>`<li>${withInlineTex(fmtMatrix(st))}</li>`).join('')}</ol>
+        </div>`:''}
+        ${(q.kps||[]).length?`<div class="exq-kps"><span class="exq-kps-t">考查知识点：</span>${
+          q.kps.map(n=>`<span class="kp-ref exq-kp" data-name="${esc(n)}">${esc(n)}</span>`).join('')
+        }</div>`:''}
+      </div>`;
+    }).join('');
+    // 万一某考点没有对应真题，退回显示汇总解法
+    const fallbackSols = (mine.length ? '' : (k.solutions||[]).map((s,si)=>{
       const steps = fmtSteps(s);
       return `<div class="exsol">
         <div class="exsol-h">🔧 解法${(k.solutions||[]).length>1?' '+String(si+1):''}　<span style="font-weight:400;color:#64748b">（${steps.length} 步）</span></div>
         <ol class="exsteps">${steps.map(st=>`<li>${withInlineTex(fmtMatrix(st))}</li>`).join('')}</ol>
       </div>`;
-    }).join('');
+    }).join(''));
     return `<div class="exkp">
       <div class="exhead">
         <span class="exrank">${k.rank}</span>
@@ -598,16 +616,9 @@ function renderExam(d){
       <div class="exbar"><i style="width:${bar}%"></i></div>
       ${types?`<div class="exmeta">📝 题型：${types}</div>`:''}
       ${pats?`<div class="expat">🎯 <b>考法</b><br>${pats}</div>`:''}
-      ${sols}
-      ${shown.length?`<div class="exsec" style="font-size:12.5px;margin:10px 0 5px">📄 考过的真题（${mine.length} 道，题下知识点可点击）</div>`:''}
-      ${shown.map(q=>`<div class="exq">
-          <div class="exq-h">${esc(q.source||'')}　第 ${esc(q.no||'')} 题
-            <span class="exq-t">${esc(q.type||'')}${q.points?' '+Math.round(q.points)+'分':''}</span></div>
-          <div class="exq-b">${esc((q.text||'').slice(0,400))}${(q.text||'').length>400?' …':''}</div>
-          ${(q.kps||[]).length?`<div class="exq-kps"><span class="exq-kps-t">考查：</span>${
-            q.kps.map(n=>`<span class="kp-ref exq-kp" data-name="${esc(n)}">${esc(n)}</span>`).join('')
-          }</div>`:''}
-        </div>`).join('')}
+      ${shown.length?`<div class="exsec" style="font-size:12.5px;margin:11px 0 5px">📄 考过的真题（${mine.length} 道）</div>`:''}
+      ${qBlocks}
+      ${fallbackSols}
       ${more>0?`<div class="hint" style="margin-top:5px">…… 还有 ${more} 道同类题</div>`:''}
     </div>`;
   }).join('');
