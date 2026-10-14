@@ -137,6 +137,10 @@
   .exsteps li { font-size: 13px; line-height: 1.9; color: #334155; margin-bottom: 4px; padding-left: 2px; }
   .exsteps li::marker { color: #0284c7; font-weight: 700; }
   .expat { background: #fffbeb; border-left: 3px solid #d97706; border-radius: 6px; padding: 8px 12px; margin-top: 7px; font-size: 13px; line-height: 1.75; color: #78350f; }
+  .exq { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 7px; padding: 9px 11px; margin-top: 7px; }
+  .exq-h { font-size: 11.5px; color: #64748b; margin-bottom: 5px; }
+  .exq-t { background: #e2e8f0; color: #475569; border-radius: 4px; padding: 1px 6px; margin-left: 4px; }
+  .exq-b { font-size: 12.8px; line-height: 1.8; color: #334155; white-space: pre-wrap; word-break: break-word; }
 
   /* 学习指南 */
   .gchap { border: 2px solid #e5e7eb; border-radius: 12px; margin-bottom: 14px; overflow: hidden; }
@@ -152,11 +156,13 @@
   .gsummary { font-size: 13px; color: #6b7280; margin-bottom: 9px; }
   .gguide { font-size: 13.8px; line-height: 1.85; color: #1f2937; background: #f8fafc; border-left: 3px solid #2563eb; border-radius: 6px; padding: 11px 13px; margin-bottom: 10px; white-space: pre-wrap; }
   .gnote { font-size: 13px; line-height: 1.7; margin-bottom: 6px; }
-  .gkp { display: flex; align-items: center; gap: 7px; padding: 6px 0; border-bottom: 1px dashed #f0f0f0; font-size: 13px; }
+  .gkp { display: block; padding: 8px 0; border-bottom: 1px dashed #f0f0f0; }
   .gkp:last-child { border-bottom: none; }
-  .gkpt { flex: none; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #fff; }
-  .gkpname { flex: 1; }
-  .gkpr { flex: none; color: #9ca3af; font-size: 11.5px; }
+  .gkp-top { display: flex; align-items: flex-start; gap: 7px; }
+  .gkpt { flex: none; border-radius: 4px; padding: 1px 6px; font-size: 11px; color: #fff; margin-top: 2px; }
+  .gkpname { flex: 1; font-size: 13.5px; line-height: 1.55; }
+  .gkpr { font-size: 11.5px; color: #9ca3af; margin-top: 4px; line-height: 1.5; }
+  .texfail { background: #fef2f2; color: #b91c1c; padding: 2px 5px; border-radius: 4px; font-size: 12.5px; word-break: break-all; }
 
   .reader { margin-top: 12px; border-top: 1px solid #e5e7eb; padding-top: 12px; font-size: 14px; line-height: 1.7; }
   .reader h2 { font-size: 16px; margin: 14px 0 6px; color: #1d4ed8; }
@@ -311,11 +317,38 @@ if(STATIC_MODE){
 let files = [];
 
 /* ---------- KaTeX 专业数学排版 ---------- */
+function _repairTex(t){
+  let s = String(t || '').trim();
+  // 1) 补齐未闭合的 \begin{env}
+  const stack = [];
+  const re = /\\(begin|end)\s*\{(\w+)\}/g; let m;
+  while((m = re.exec(s))){
+    if(m[1] === 'begin') stack.push(m[2]);
+    else stack.pop();
+  }
+  while(stack.length) s += '\\end{' + stack.pop() + '}';
+  // 2) 补齐未闭合的 { }
+  let open = 0;
+  for(const c of s){ if(c === '{') open++; else if(c === '}') open--; }
+  while(open-- > 0) s += '}';
+  // 3) 去掉结尾悬空的 \\ 或 &
+  s = s.replace(/\\\\\s*$/, '').replace(/&\s*$/, '');
+  return s;
+}
 function renderTex(tex, display){
   if(!tex) return '';
+  const t = String(tex);
+  // 先按原样渲染；失败则修复后重试；再失败才降级成等宽文本
   try{
-    return katex.renderToString(String(tex), {displayMode: !!display, throwOnError:false, strict:false, output:'html'});
-  }catch(e){ return '<code>'+esc(tex)+'</code>'; }
+    return katex.renderToString(t, {displayMode: !!display, throwOnError: true, strict: false, output: 'html'});
+  }catch(e1){
+    try{
+      return katex.renderToString(_repairTex(t),
+        {displayMode: !!display, throwOnError: true, strict: false, output: 'html'});
+    }catch(e2){
+      return '<code class="texfail" title="公式源码可能有误">' + esc(t) + '</code>';
+    }
+  }
 }
 /* 概念正文里若有 $...$ 行内公式也渲染 */
 function withInlineTex(s){
@@ -473,9 +506,11 @@ function renderGuide(d){
         ${ch.might_skip&&ch.might_skip!=='无'?`<div class="gnote">⏭ <b>可以略过：</b>${esc(ch.might_skip)}</div>`:''}
         <div style="margin-top:9px">${(ch.kps||[]).map(k=>`
           <div class="gkp">
-            <span class="gkpt tier-${esc(k.tier||'一般')}">${esc(k.tier||'一般')}</span>
-            <span class="gkpname kp-ref" data-name="${esc(k.name)}">${esc(k.name)}</span>
-            <span class="gkpr">${esc(k.reason||'')}</span>
+            <div class="gkp-top">
+              <span class="gkpt tier-${esc(k.tier||'一般')}">${esc(k.tier||'一般')}</span>
+              <span class="gkpname kp-ref" data-name="${esc(k.name)}">${esc(k.name)}</span>
+            </div>
+            ${k.reason?`<div class="gkpr">${esc(k.reason)}</div>`:''}
           </div>`).join('')}</div>
       </div>
     </div>`;
@@ -504,21 +539,35 @@ function fmtSteps(text){
 }
 function renderExam(d){
   if(!d || !(d.top_kps||[]).length){
-    $('#examView').innerHTML = '<p class="hint">这门课还没有试卷分析。<br>把期末试卷 PDF 放到 <code>00-原始资料/海洋技术/课程名/exams/</code>，'
+    $('#examView').innerHTML = '<p class="hint">这门课还没有试卷分析。<br>把期末试卷 PDF 放到 <code>00-原始资料/海洋技术/课程名/期末题/</code>，'
       + '然后在 02-管线 目录运行 <code>run.py exam</code> 生成。</p>';
     return;
   }
+  const qs = d.questions || [];
+  const totalPts = (d.question_types||[]).reduce((a,t)=>a+(t.points||0),0);
+  const paperN = (d.papers||[]).length || 1;
+
   let h = `<p class="hint" style="margin-bottom:4px">试卷：${(d.papers||[]).map(esc).join('、')}</p>`;
   h += `<p class="hint" style="margin-bottom:12px">共 <b>${d.question_count||0}</b> 道题　·　命中 <b>${d.top_kps.length}</b> 个知识点</p>`;
+
   if((d.question_types||[]).length){
-    h += '<div class="exsec">📋 题型分布</div><div class="tchips">' +
-      d.question_types.map(t=>`<span class="tchip">${esc(t.type)} ${t.count}题 / ${t.points}分</span>`).join('') + '</div>';
+    h += `<div class="exsec">📋 题型分布</div>`;
+    h += `<p class="hint" style="margin-bottom:6px">${paperN} 份试卷合计 <b>${Math.round(totalPts)}</b> 分（括号内为占总分比例 / 平均每份）</p>`;
+    h += '<div class="tchips">' + d.question_types.map(t=>{
+      const pct = totalPts ? Math.round((t.points||0)/totalPts*100) : 0;
+      const avg = Math.round((t.points||0)/paperN);
+      return `<span class="tchip">${esc(t.type)} ${t.count}题 · ${Math.round(t.points)}分（${pct}% / 均${avg}分）</span>`;
+    }).join('') + '</div>';
   }
+
   h += '<div class="exsec">🔥 重要知识点排序（按期末分值权重，点知识点跳到详情）</div>';
   h += d.top_kps.map(k=>{
     const bar = Math.max(3, Math.round((k.weight||0)*100));
     const types = Object.entries(k.types||{}).map(([t,c])=>`${esc(t)}×${c}`).join('、');
     const pats = (k.patterns||[]).map(esc).join('<br>');
+    const mine = qs.filter(q => (q.kps||[]).includes(k.kp));
+    const shown = mine.slice(0, 4);
+    const more = mine.length - shown.length;
     const sols = (k.solutions||[]).map((s,si)=>{
       const steps = fmtSteps(s);
       return `<div class="exsol">
@@ -530,12 +579,19 @@ function renderExam(d){
       <div class="exhead">
         <span class="exrank">${k.rank}</span>
         <span class="exname kp-ref" data-name="${esc(k.kp)}">${esc(k.kp)}</span>
-        <span class="expts">${k.points}分 / ${k.count}次</span>
+        <span class="expts">${Math.round(k.points)}分 / ${k.count}次</span>
       </div>
       <div class="exbar"><i style="width:${bar}%"></i></div>
       ${types?`<div class="exmeta">📝 题型：${types}</div>`:''}
       ${pats?`<div class="expat">🎯 <b>考法</b><br>${pats}</div>`:''}
       ${sols}
+      ${shown.length?`<div class="exsec" style="font-size:12.5px;margin:10px 0 5px">📄 考过的真题（${mine.length} 道）</div>`:''}
+      ${shown.map(q=>`<div class="exq">
+          <div class="exq-h">${esc(q.source||'')}　第 ${esc(q.no||'')} 题
+            <span class="exq-t">${esc(q.type||'')}${q.points?' '+Math.round(q.points)+'分':''}</span></div>
+          <div class="exq-b">${esc((q.text||'').slice(0,400))}${(q.text||'').length>400?' …':''}</div>
+        </div>`).join('')}
+      ${more>0?`<div class="hint" style="margin-top:5px">…… 还有 ${more} 道同类题</div>`:''}
     </div>`;
   }).join('');
   $('#examView').innerHTML = h;
