@@ -234,6 +234,11 @@
     font-size: 15.5px; font-weight: 700; color: #08415f; line-height: 1.55;
     margin-bottom: 11px; padding-bottom: 9px; border-bottom: 1px dashed #d6ecf7;
   }
+  .kp-head .kp-chev { float: right; color: #7fb8d0; font-size: 13px; transition: transform .2s; }
+  .kp.open .kp-chev { transform: rotate(180deg); }
+  .kp-head.kp-toggle { cursor: pointer; }
+  .kp-head.kp-toggle:hover { color: #1478a8; }
+  .kp-body { padding-top: 2px; }
   .kp-head .ktype {
     display: inline-block; background: #e0f2fb; color: #0b4f71;
     border-radius: 6px; padding: 1px 8px; font-size: 11.5px; font-weight: 600;
@@ -899,8 +904,16 @@ function renderKPChapters(list){
   const first = $('#kpChapters .chapter'); if(first) first.click();
 }
 function renderKP(kp, idx){
-  let h = `<div class="kp" id="kp-${idx}" data-name="${esc(kp.name)}">`;
-  h += `<div class="kp-head"><span class="ktype">${esc(kp.type||'')}</span>${esc(kp.name)}</div>`;
+  // 只渲染头部：章节按内容合并后一章可能 60+ 个知识点，
+  // 全部立刻跑 KaTeX 渲染会很卡。正文改为「点开才算」。
+  return `<div class="kp" id="kp-${idx}" data-name="${esc(kp.name)}" data-idx="${idx}">
+    <div class="kp-head kp-toggle"><span class="ktype">${esc(kp.type||'')}</span>${esc(kp.name)}<span class="kp-chev">▾</span></div>
+    <div class="kp-body" style="display:none"></div>
+  </div>`;
+}
+/* 展开时才构建正文（含 KaTeX 渲染） */
+function renderKPBody(kp){
+  let h = '';
   if(kp.concept) h += `<div class="kp-concept">${withInlineTex(kp.concept)}</div>`;
   for(const f of (kp.formulas||[])){
     h += `<div class="kp-formula">${renderTex(f.latex, true)}`;
@@ -922,12 +935,13 @@ function renderKP(kp, idx){
   h += refs(kp.related, '相关');
   // 示意图（程序生成）
   if(kp.diagram && kp.diagram.kind){
-    const q = `subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}&doc=${encodeURIComponent(curDocId)}&name=${encodeURIComponent(kp.name)}`;
+    const srcDoc = kp.src_doc || curDocId;
+    const q = `subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}&doc=${encodeURIComponent(srcDoc)}&name=${encodeURIComponent(kp.name)}`;
     h += `<div class="diagram"><img src="/api/kb/diagram?${q}" loading="lazy" onerror="this.parentNode.style.display='none'">`;
     if(kp.diagram.caption) h += `<div class="cap">${esc(kp.diagram.caption)}</div>`;
     h += '</div>';
   }
-  // 来源课件页（合并章节后，用知识点自己的来源文件，而不是当前「新章」）
+  // 来源课件页（合并章节后，用知识点自己的来源文件）
   if((kp.pages||[]).length){
     const srcDoc = kp.src_doc || curDocId;
     const base = `subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}&doc_id=${encodeURIComponent(srcDoc)}`;
@@ -935,8 +949,37 @@ function renderKP(kp, idx){
     for(const n of kp.pages.slice(0,4)) h += `<img src="/api/kb/page?${base}&n=${n}" loading="lazy" onclick="showLightbox(this.src)">`;
     h += '</div>';
   }
-  return h + '</div>';
+  return h;
 }
+/* 展开 / 收起（首次展开才构建正文） */
+function toggleKPCard(card, force){
+  if(!card) return;
+  const body = card.querySelector('.kp-body');
+  if(!body) return;
+  const wantOpen = (force === undefined) ? (body.style.display === 'none') : !!force;
+  if(wantOpen && body.dataset.built !== '1'){
+    const kp = kpIndex[+card.dataset.idx];
+    if(kp){ body.innerHTML = renderKPBody(kp); body.dataset.built = '1'; }
+  }
+  body.style.display = wantOpen ? '' : 'none';
+  card.classList.toggle('open', wantOpen);
+}
+/* 高亮定位到某个知识点（并自动展开） */
+function highlightKP(el){
+  if(!el) return;
+  setMode('modeKP');
+  toggleKPCard(el, true);
+  el.classList.add('hl');
+  el.scrollIntoView({behavior: 'smooth', block: 'center'});
+  setTimeout(()=>el.classList.remove('hl'), 2500);
+}
+/* 点知识点标题展开/收起 */
+document.addEventListener('click', (ev)=>{
+  const t = ev.target && ev.target.closest ? ev.target.closest('.kp-toggle') : null;
+  if(!t) return;
+  const card = t.closest('.kp');
+  if(card) toggleKPCard(card);
+});
 function loadKP(docId){
   const s=$('#bSubject').value, c=$('#bCourse').value;
   curSubject = s; curCourse = c; curDocId = docId;
@@ -950,7 +993,7 @@ function loadKP(docId){
       document.querySelectorAll('#kpChapters .chapter').forEach(x=>{
         x.classList.toggle('on', x.dataset.doc === docId);
       });
-      $('#kpList').innerHTML = `<p class="hint" style="margin-bottom:10px">共 ${kps.length} 个知识点（点「前置/相关」可跳转）</p>` + kps.map(renderKP).join('');
+      $('#kpList').innerHTML = `<p class="hint" style="margin-bottom:10px">共 ${kps.length} 个知识点　·　<b>点知识点标题展开</b>（含概念/公式/例题）　·　页面跳转会自动展开</p>` + kps.map(renderKP).join('');
       // 绑定知识点跳转
       document.querySelectorAll('#kpList .kp-ref').forEach(el=>el.addEventListener('click', ()=>jumpToKP(el.dataset.name)));
     });
@@ -962,7 +1005,7 @@ async function jumpToKP(name){
   name = (name||'').trim();
   if(!name) return;
   const local = findKpEl(name);
-  if(local){ setMode('modeKP'); local.classList.add('hl'); local.scrollIntoView({behavior:'smooth', block:'center'}); setTimeout(()=>local.classList.remove('hl'), 2500); return; }
+  if(local){ highlightKP(local); return; }
   const s = ($('#bSubject')&&$('#bSubject').value)||'海洋技术';
   const c = ($('#bCourse')&&$('#bCourse').value)||'';
   let d = {status:'missing', name:name};
@@ -974,7 +1017,7 @@ async function jumpToKP(name){
     if(!d.course || d.course === c){
       setMode('modeKP');
       await loadKP(d.doc_id);
-      setTimeout(()=>{ const t=findKpEl(d.name); if(t){ t.classList.add('hl'); t.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>t.classList.remove('hl'),2500);} }, 500);
+      setTimeout(()=>{ highlightKP(findKpEl(d.name)); }, 200);
       return;
     }
     showKpModal(`<div class="km-title">🔗 这个知识点在另一门课里</div>
@@ -1035,7 +1078,7 @@ async function switchCourseTo(course, docId, kpName){
   }
   setMode('modeKP');
   await loadKP(docId);
-  setTimeout(()=>{ const t=findKpEl(kpName); if(t){ t.classList.add('hl'); t.scrollIntoView({behavior:'smooth',block:'center'}); setTimeout(()=>t.classList.remove('hl'),2500);} }, 500);
+  setTimeout(()=>{ highlightKP(findKpEl(kpName)); }, 200);
 }
 
 /* --- 模式切换 --- */
