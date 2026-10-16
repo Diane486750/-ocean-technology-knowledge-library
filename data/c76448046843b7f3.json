@@ -1,1 +1,1 @@
-{"status": "missing", "name": "递归的终止条件", "suggests": []}
+{"status": "supplement", "name": "递归的终止条件", "card": {"name": "递归的终止条件", "concept": "递归函数在调用自身前，必须有一个不再继续递归、直接返回结果的条件；它对应问题的最小规模情形。终止条件保证递归能在有限步结束，并把最底层结果逐层带回。没有它，递归会不断压栈。", "formulas": ["f(n)=\\text{直接值},\\quad n\\le n_0", "\\text{例如 }0!=1,\\quad n!=n(n-1)!\\quad(n\\ge1)"], "example": "阶乘递归中令 fact(0)=1；计算 fact(3) 到 fact(0) 后停止并逐层返回。", "pitfall": "漏写终止条件，或终止条件永远达不到，导致栈溢出。", "prereq": ["函数调用", "数学归纳法"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

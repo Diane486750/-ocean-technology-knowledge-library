@@ -1,1 +1,1 @@
-{"status": "missing", "name": "功率三角形", "suggests": []}
+{"status": "supplement", "name": "功率三角形", "card": {"name": "功率三角形", "concept": "交流电路中视在功率 S、有功功率 P、无功功率 Q 构成直角三角形关系。它用于计算功率因数、无功补偿和电气设备容量。P 做实际功，Q 在储能元件间交换，S 是电压电流有效值乘积。", "formulas": ["S^2=P^2+Q^2", "P=S\\cos\\varphi,\\quad Q=S\\sin\\varphi", "\\cos\\varphi=P/S"], "example": "若 S=100VA，P=80W，则 Q=60var，功率因数为 0.8。", "pitfall": "不能把 P、Q、S 直接代数相加；单位不同：P 用 W，Q 用 var，S 用 VA。", "prereq": ["交流电路", "三角函数与相量"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}
