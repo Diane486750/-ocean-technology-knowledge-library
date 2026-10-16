@@ -118,6 +118,13 @@
   .sname { font-size: 13.5px; font-weight: 600; color: #5b21b6; line-height: 1.45; }
   .skps { flex: none; font-size: 11.5px; color: #9ca3af; white-space: nowrap; }
   .slogic { text-align: center; color: #8b5cf6; font-size: 12px; padding: 6px 4px; line-height: 1.6; }
+  .skp-list { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 0 8px; }
+  .kp-chip {
+    display: inline-block; background: #eef6fb; color: #0d6b96;
+    border: 1px solid #d6ecf7; border-radius: 14px; padding: 3px 11px;
+    font-size: 12.3px; cursor: pointer; transition: all .14s;
+  }
+  .kp-chip:hover { background: #1789bd; color: #fff; border-color: #1789bd; }
 
   /* 考点 */
   .exsec { font-size: 14px; font-weight: 700; margin: 14px 0 8px; color: #1e40af; }
@@ -168,6 +175,107 @@
   .gkpr { font-size: 11.5px; color: #9ca3af; margin-top: 4px; line-height: 1.5; }
   .texfail { background: #fef2f2; color: #b91c1c; padding: 2px 5px; border-radius: 4px; font-size: 12.5px; word-break: break-all; }
 
+  /* ==================== 海洋主题 ==================== */
+  body {
+    background:
+      radial-gradient(1100px 420px at 8% -8%, #c2e9f8 0%, rgba(194,233,248,0) 62%),
+      radial-gradient(900px 400px at 95% 0%, #a9def2 0%, rgba(169,222,242,0) 58%),
+      linear-gradient(180deg, #eefaff 0%, #dcf0fa 42%, #eaf8fe 100%);
+    background-attachment: fixed;
+    color: #0d3b52;
+  }
+  body::before {
+    content: ''; position: fixed; left: 0; right: 0; top: 0; height: 5px; z-index: 60;
+    background: linear-gradient(90deg, #06304a, #0b4f71, #1478a8, #4fb3d9, #8adcef, #4fb3d9, #1478a8, #0b4f71, #06304a);
+  }
+  h1 { color: #08415f; letter-spacing: .5px; }
+  .card {
+    background: rgba(255, 255, 255, .88);
+    border: 1px solid #c9e8f5;
+    box-shadow: 0 5px 20px rgba(11, 79, 113, .09);
+    backdrop-filter: blur(6px);
+  }
+  .tabs button, .modes button {
+    background: rgba(255, 255, 255, .72);
+    border-color: #bfe3f2; color: #0b4f71;
+  }
+  .tabs button.on, .modes button.on {
+    background: linear-gradient(180deg, #1789bd, #0b4f71);
+    border-color: #0b4f71; color: #fff;
+    box-shadow: 0 3px 10px rgba(11, 79, 113, .28);
+  }
+
+  /* ---------- 课程卡片选择器 ---------- */
+  .picker { margin-bottom: 14px; }
+  .pick-row { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 9px; }
+  .pick-label { flex: none; font-size: 13px; font-weight: 700; color: #0b4f71; padding-top: 6px; white-space: nowrap; }
+  .picks { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+  .pick {
+    cursor: pointer; border: 1.5px solid #bfe3f2; border-radius: 20px;
+    background: rgba(255, 255, 255, .85); padding: 6px 15px;
+    font-size: 13.5px; color: #0b4f71; transition: all .16s ease;
+    box-shadow: 0 1px 4px rgba(11, 79, 113, .06);
+  }
+  .pick:hover { border-color: #4fb3d9; background: #eaf8fd; transform: translateY(-1px); }
+  .pick.on {
+    background: linear-gradient(180deg, #1789bd, #0b4f71); color: #fff;
+    border-color: #0b4f71; box-shadow: 0 3px 12px rgba(11, 79, 113, .3);
+  }
+  .pick-empty { font-size: 13px; color: #94a3b8; }
+
+  /* ---------- 知识点卡片：层次感 ---------- */
+  .kp {
+    background: rgba(255, 255, 255, .94);
+    border: 1px solid #d6ecf7; border-left: 4px solid #1478a8;
+    border-radius: 12px; padding: 15px 17px; margin-bottom: 15px;
+    box-shadow: 0 3px 14px rgba(11, 79, 113, .07);
+  }
+  .kp-head {
+    font-size: 15.5px; font-weight: 700; color: #08415f; line-height: 1.55;
+    margin-bottom: 11px; padding-bottom: 9px; border-bottom: 1px dashed #d6ecf7;
+  }
+  .kp-head .ktype {
+    display: inline-block; background: #e0f2fb; color: #0b4f71;
+    border-radius: 6px; padding: 1px 8px; font-size: 11.5px; font-weight: 600;
+    margin-right: 7px; vertical-align: 2px;
+  }
+  .kp p, .kp-concept p { margin: 0 0 9px; }
+  .kp-concept, .kp-body { font-size: 14.2px; line-height: 2.0; color: #1d3f52; }
+  .kp-concept b, .kp-concept strong { color: #0b4f71; }
+  .kp-formula {
+    background: linear-gradient(180deg, #f6fcff, #eef9fe);
+    border-left: 3px solid #4fb3d9; border-radius: 9px;
+    padding: 11px 14px; margin: 11px 0;
+  }
+  .fsym { background: rgba(240, 250, 255, .85); border-radius: 9px; padding: 10px 13px; margin-top: 9px; }
+  .kp-link { margin-top: 9px; padding-top: 9px; border-top: 1px dashed #e2f1f9; font-size: 13px; }
+  .kp-ref {
+    color: #0d6b96; border-bottom: 1px dashed #7fc4de; cursor: pointer;
+    padding: 0 1px; transition: all .14s;
+  }
+  .kp-ref:hover { color: #fff; background: #1789bd; border-radius: 4px; border-bottom-color: transparent; }
+  .kp-pages img { border: 1px solid #d6ecf7; border-radius: 6px; }
+  .badge { background: #e0f2fb; color: #0b4f71; }
+  .chapter { border-color: #d6ecf7; background: rgba(255, 255, 255, .8); }
+  .chapter:hover { background: #eaf8fd; border-color: #7fc4de; }
+  .chapter.on { background: linear-gradient(180deg, #1789bd, #0b4f71); border-color: #0b4f71; }
+  .chapter.on .t, .chapter.on .m { color: #fff; }
+  .flowline { background: rgba(233, 247, 253, .9); border-left-color: #1478a8; color: #0b4f71; }
+  .hnode { border-color: #7fc4de; background: rgba(255, 255, 255, .92); }
+  .hhead:hover { background: #eaf8fd; }
+  .hnum { background: linear-gradient(180deg, #1789bd, #0b4f71); }
+  .hlogic { color: #1478a8; }
+  .exkp { border-left-color: #0b6b8f; background: rgba(255, 255, 255, .94); }
+  .thread { border-left-color: #1478a8; background: rgba(255, 255, 255, .94); }
+  .th-title { color: #08415f; }
+  .gchap { background: rgba(255, 255, 255, .94); }
+  .ghead { background: rgba(238, 249, 254, .9); }
+  .gguide { background: rgba(240, 250, 255, .85); border-left-color: #1478a8; }
+  .tier-必考 { background: linear-gradient(180deg, #e11d48, #9f1239); }
+  .tier-重点 { background: linear-gradient(180deg, #f97316, #c2410c); }
+  .tier-一般 { background: linear-gradient(180deg, #0891b2, #0e7490); }
+  .tier-选看 { background: linear-gradient(180deg, #94a3b8, #64748b); }
+
   .reader { margin-top: 12px; border-top: 1px solid #e5e7eb; padding-top: 12px; font-size: 14px; line-height: 1.7; }
   .reader h2 { font-size: 16px; margin: 14px 0 6px; color: #1d4ed8; }
   .reader p { margin: 6px 0; }
@@ -215,10 +323,12 @@
   <!-- ============ 浏览 ============ -->
   <div id="viewBrowse" style="display:none">
     <div class="card">
-      <label>学科</label>
-      <select id="bSubject"></select>
-      <label>课程</label>
-      <select id="bCourse"></select>
+      <div class="picker">
+        <div class="pick-row"><span class="pick-label">🌊 学科</span><div id="subjCards" class="picks"></div></div>
+        <div class="pick-row"><span class="pick-label">📚 课程</span><div id="courseCards" class="picks"></div></div>
+      </div>
+      <select id="bSubject" style="display:none"></select>
+      <select id="bCourse" style="display:none"></select>
       <div class="modes">
         <button id="modeGuide" class="on" type="button">📖 学习指南</button>
         <button id="modeExam" type="button">🎯 考点</button>
@@ -354,10 +464,28 @@ function renderTex(tex, display){
     }
   }
 }
+/* 概念正文里「裸写的数学」自动包成 $...$，让 KaTeX 渲染（不用 ^ _ 等符号凑合） */
+function autoTex(s){
+  const parts = String(s == null ? '' : s).split(/(\$[^$]+\$)/g);
+  return parts.map(p=>{
+    if(p.startsWith('$') && p.endsWith('$')) return p;
+    // 允许空格（\dot U 这种命令后带空格），但用「像不像公式」的判据兜住
+    return p.replace(/[A-Za-z0-9\\{}_^=+\-*/().,|<>\[\]\u0370-\u03ff ]+/g, (m)=>{
+      const t = m.trim();
+      if(t.length < 2 || t.length > 80) return m;
+      if(!/[\\_^=]/.test(t)) return m;                      // 必须有数学特征
+      if(!/[A-Za-z\\\u0370-\u03ff]/.test(t)) return m;       // 至少含字母/希腊字母/命令
+      // 没有 \ _ ^ 时，只认很短的片段，避免把英文句子当公式
+      if(!/[\\_^]/.test(t) && t.split(/\s+/).filter(w=>/[A-Za-z]/.test(w)).length > 3) return m;
+      const lead = m.match(/^\s*/)[0], tail = m.match(/\s*$/)[0];
+      return lead + '$' + t + '$' + tail;
+    });
+  }).join('');
+}
 /* 概念正文里若有 $...$ 行内公式也渲染 */
 function withInlineTex(s){
   if(!s) return '';
-  const parts = String(s).split(/(\$[^$]+\$)/g);
+  const parts = autoTex(s).split(/(\$[^$]+\$)/g);
   return parts.map(p=>{
     if(p.length>2 && p[0]==='$' && p.endsWith('$')) return renderTex(p.slice(1,-1), false);
     return esc(p);
@@ -391,7 +519,7 @@ function loadIntegration(){
     }
     let h = `<p class="hint" style="margin-bottom:12px">涉及课程：${(d.courses||[]).map(esc).join('、')}　·　共 <b>${th.length}</b> 条主题线</p>`;
     h += th.map(t=>{
-      const items = (t.items||[]).map(it=>`<span class="itag">${esc(it.course)}</span>${esc(it.kp)}`).join('　');
+      const items = (t.items||[]).map(it=>`<span class="itag">${esc(it.course)}</span><span class="kp-ref" data-name="${esc(it.kp)}">${esc(it.kp)}</span>`).join('　');
       return `<div class="thread">
         <div class="th-title">🔗 ${esc(t.theme)}</div>
         ${t.structure?`<div class="th-struct"><b>共同结构：</b>${esc(t.structure)}</div>`:''}
@@ -460,6 +588,7 @@ function loadKBSubjects(){
   fetch('/api/subjects').then(r=>r.json()).then(list=>{
     const el=$('#bSubject'); el.innerHTML='';
     list.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; el.appendChild(o); });
+    renderPicker('subjCards', list, 'bSubject');
     loadKBCourses();
   });
 }
@@ -467,8 +596,22 @@ function loadKBCourses(){
   fetch('/api/kb/courses?subject='+encodeURIComponent($('#bSubject').value)).then(r=>r.json()).then(list=>{
     const el=$('#bCourse'); el.innerHTML='';
     list.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; el.appendChild(o); });
+    renderPicker('courseCards', list, 'bCourse');
     loadChapters();
   });
+}
+/* 把下拉框渲染成漂亮的卡片按钮（海洋风） */
+function renderPicker(boxId, names, selectId){
+  const box = $('#'+boxId);
+  if(!box) return;
+  if(!names || !names.length){ box.innerHTML = '<span class="pick-empty">暂无</span>'; return; }
+  const cur = $('#'+selectId).value;
+  box.innerHTML = names.map(n=>`<span class="pick${n===cur?' on':''}" data-v="${esc(n)}">${esc(n)}</span>`).join('');
+  box.querySelectorAll('.pick').forEach(el=>el.addEventListener('click', ()=>{
+    $('#'+selectId).value = el.dataset.v;
+    box.querySelectorAll('.pick').forEach(x=>x.classList.toggle('on', x===el));
+    if(selectId === 'bSubject') loadKBCourses(); else loadChapters();
+  }));
 }
 function loadChapters(){
   const c=$('#bCourse').value; curCourse = c;
@@ -692,6 +835,10 @@ function toggleChapter(node){
         <span class="sname">${esc(sec.name)}</span>
         <span class="skps">${(sec.kps||[]).length} 个 →</span>
       </div>`;
+    if((sec.kps||[]).length){
+      s += `<div class="skp-list">` + (sec.kps||[]).map(k=>
+        `<span class="kp-chip kp-ref" data-name="${esc(k)}">${esc(k)}</span>`).join('') + `</div>`;
+    }
     if(sec.logic_to_next) s += `<div class="slogic">↓ ${esc(sec.logic_to_next)}</div>`;
   });
   box.innerHTML = s || '<p class="hint">这一章还没有小节数据</p>';
@@ -868,6 +1015,16 @@ function showKpModal(html){
   });
 }
 function closeKpModal(){ $('#kpModal').style.display = 'none'; }
+/* 全局委托：页面上任何 .kp-ref 都能点击跳转（层次导航小节、知识整合、考点真题…） */
+document.addEventListener('click', (ev)=>{
+  const el = ev.target && ev.target.closest ? ev.target.closest('.kp-ref') : null;
+  if(!el) return;
+  const name = el.dataset.name;
+  if(!name) return;
+  ev.preventDefault();
+  ev.stopPropagation();
+  jumpToKP(name);
+}, true);
 async function switchCourseTo(course, docId, kpName){
   closeKpModal();
   if($('#bCourse').value !== course){
