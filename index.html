@@ -927,9 +927,10 @@ function renderKP(kp, idx){
     if(kp.diagram.caption) h += `<div class="cap">${esc(kp.diagram.caption)}</div>`;
     h += '</div>';
   }
-  // 来源课件页
+  // 来源课件页（合并章节后，用知识点自己的来源文件，而不是当前「新章」）
   if((kp.pages||[]).length){
-    const base = `subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}&doc_id=${encodeURIComponent(curDocId)}`;
+    const srcDoc = kp.src_doc || curDocId;
+    const base = `subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}&doc_id=${encodeURIComponent(srcDoc)}`;
     h += '<div class="kp-pages"><div class="plabel">📄 来源课件页（点击放大）</div>';
     for(const n of kp.pages.slice(0,4)) h += `<img src="/api/kb/page?${base}&n=${n}" loading="lazy" onclick="showLightbox(this.src)">`;
     h += '</div>';
