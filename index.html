@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<script>window.__STATIC__=true;</script>
+<script>window.__STATIC__=true;window.__BUILD__='1792399162';</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>海洋技术知识库</title>
@@ -393,10 +393,12 @@ const esc = s => (s == null ? '' : String(s)).replace(/&/g,'&amp;').replace(/</g
              改读导出时预生成的 data/*.json 与 pages/*.webp
    ============================================================ */
 const STATIC_MODE = !!window.__STATIC__;
+const BUILD_VER = window.__BUILD__ || String(Date.now());
 let _staticMapPromise = null;
+function _bust(u){ return u + (u.indexOf('?') >= 0 ? '&' : '?') + 'v=' + BUILD_VER; }
 function _staticMap(){
   if(!_staticMapPromise){
-    _staticMapPromise = fetch('data/manifest.json').then(r=>r.ok?r.json():{}).catch(()=>({}));
+    _staticMapPromise = fetch(_bust('data/manifest.json')).then(r=>r.ok?r.json():{}).catch(()=>({}));
   }
   return _staticMapPromise;
 }
@@ -405,15 +407,15 @@ function _mapUrl(map, url){
     const q = new URLSearchParams(url.split('?')[1] || '');
     const doc = q.get('doc_id') || '';
     const n = parseInt(q.get('n') || '1', 10);
-    return `pages/${encodeURIComponent(q.get('subject')||'')}/${encodeURIComponent(q.get('course')||'')}/`
-         + `${encodeURIComponent(doc)}/p${String(n).padStart(3,'0')}.webp`;
+    return _bust(`pages/${encodeURIComponent(q.get('subject')||'')}/${encodeURIComponent(q.get('course')||'')}/`
+         + `${encodeURIComponent(doc)}/p${String(n).padStart(3,'0')}.webp`);
   }
   if(url.startsWith('/api/kb/diagram')){
     const q = new URLSearchParams(url.split('?')[1] || '');
-    return `diagrams/${encodeURIComponent(q.get('subject')||'')}/${encodeURIComponent(q.get('course')||'')}/`
-         + `${encodeURIComponent(q.get('doc')||'')}/${encodeURIComponent(q.get('name')||'')}.webp`;
+    return _bust(`diagrams/${encodeURIComponent(q.get('subject')||'')}/${encodeURIComponent(q.get('course')||'')}/`
+         + `${encodeURIComponent(q.get('doc')||'')}/${encodeURIComponent(q.get('name')||'')}.webp`);
   }
-  return map[url] || url;
+  return _bust(map[url] || url);
 }
 if(STATIC_MODE){
   const _origFetch = window.fetch.bind(window);
