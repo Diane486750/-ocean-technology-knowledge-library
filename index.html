@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-<script>window.__STATIC__=true;window.__BUILD__='1792399162';</script>
+<script>window.__STATIC__=true;window.__BUILD__='1792414136';</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>海洋技术知识库</title>
@@ -905,6 +905,24 @@ function renderKPChapters(list){
   }));
   const first = $('#kpChapters .chapter'); if(first) first.click();
 }
+/* 图片 URL：静态站 / 本地服务两种模式
+   【重要】<img src> 不会被 fetch 拦截器处理，必须在这里直接把 URL 算对 */
+function pageUrl(docId, n){
+  if(STATIC_MODE){
+    return _bust(`pages/${encodeURIComponent(curSubject)}/${encodeURIComponent(curCourse)}/`
+      + `${encodeURIComponent(docId)}/p${String(n).padStart(3,'0')}.webp`);
+  }
+  return `/api/kb/page?subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}`
+    + `&doc_id=${encodeURIComponent(docId)}&n=${n}`;
+}
+function diagramUrl(docId, name){
+  if(STATIC_MODE){
+    return _bust(`diagrams/${encodeURIComponent(curSubject)}/${encodeURIComponent(curCourse)}/`
+      + `${encodeURIComponent(docId)}/${encodeURIComponent(name)}.webp`);
+  }
+  return `/api/kb/diagram?subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}`
+    + `&doc=${encodeURIComponent(docId)}&name=${encodeURIComponent(name)}`;
+}
 function renderKP(kp, idx){
   // 只渲染头部：章节按内容合并后一章可能 60+ 个知识点，
   // 全部立刻跑 KaTeX 渲染会很卡。正文改为「点开才算」。
@@ -938,17 +956,15 @@ function renderKPBody(kp){
   // 示意图（程序生成）
   if(kp.diagram && kp.diagram.kind){
     const srcDoc = kp.src_doc || curDocId;
-    const q = `subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}&doc=${encodeURIComponent(srcDoc)}&name=${encodeURIComponent(kp.name)}`;
-    h += `<div class="diagram"><img src="/api/kb/diagram?${q}" loading="lazy" onerror="this.parentNode.style.display='none'">`;
+    h += `<div class="diagram"><img src="${diagramUrl(srcDoc, kp.name)}" loading="lazy" onerror="this.parentNode.style.display='none'">`;
     if(kp.diagram.caption) h += `<div class="cap">${esc(kp.diagram.caption)}</div>`;
     h += '</div>';
   }
   // 来源课件页（合并章节后，用知识点自己的来源文件）
   if((kp.pages||[]).length){
     const srcDoc = kp.src_doc || curDocId;
-    const base = `subject=${encodeURIComponent(curSubject)}&course=${encodeURIComponent(curCourse)}&doc_id=${encodeURIComponent(srcDoc)}`;
     h += '<div class="kp-pages"><div class="plabel">📄 来源课件页（点击放大）</div>';
-    for(const n of kp.pages.slice(0,4)) h += `<img src="/api/kb/page?${base}&n=${n}" loading="lazy" onclick="showLightbox(this.src)">`;
+    for(const n of kp.pages.slice(0,4)) h += `<img src="${pageUrl(srcDoc, n)}" loading="lazy" onclick="showLightbox(this.src)">`;
     h += '</div>';
   }
   return h;
