@@ -1,0 +1,1 @@
+{"status": "supplement", "name": "四则运算", "card": {"name": "四则运算", "concept": "加法、减法、乘法、除法及其运算顺序和运算律，是代数变形与数值计算的基础。它用来把复杂表达式按规则化简或求值。", "formulas": ["a+b=b+a,\\quad ab=ba", "(a+b)+c=a+(b+c)", "a(b+c)=ab+ac"], "example": "计算 2+3×4 时先算乘法，得 2+12=14。", "pitfall": "忽略“先乘除后加减”的运算顺序；除以零没有意义。", "prereq": ["整数与分数运算", "运算顺序"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

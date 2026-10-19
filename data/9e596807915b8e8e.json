@@ -1,1 +1,1 @@
-{"status": "supplement", "name": "二叉树（Binary Tree）", "card": {"name": "二叉树（Binary Tree）", "concept": "二叉树是每个节点最多有两个子节点的树结构，子节点分左右。常用于表示层次关系、搜索和表达式。", "formulas": ["节点数 n，边数 n-1", "高度 h 的满二叉树节点数 2^{h+1}-1"], "example": "根节点 A，左子 B，右子 C，B 再有左子 D。", "pitfall": "混淆完全二叉树与满二叉树；忽略左右子节点的顺序。", "prereq": ["递归", "树的基本概念"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": [{"name": "二叉树的高度（深度）（Height / Depth）", "course": "数据结构与算法分析", "doc_id": "heapsort_1", "score": 0.667}]}
+{"status": "exact", "name": "二叉树（Binary Tree）", "course": "数据结构与算法分析", "doc_id": "bst"}

@@ -1,0 +1,1 @@
+{"status": "supplement", "name": "变量与地址", "card": {"name": "变量与地址", "concept": "变量是内存中一块有名字的存储区域；用取地址运算符 & 可得到它的地址，指针变量可保存该地址并通过 * 访问原变量。", "formulas": ["\\texttt{\\&x}", "\\texttt{*p}"], "example": "int x=3; int* p=&x; *p=5; 执行后 x 为 5。", "pitfall": "把地址值当作变量本身；或对未初始化/已释放的指针解引用。", "prereq": ["内存/存储", "指针声明"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

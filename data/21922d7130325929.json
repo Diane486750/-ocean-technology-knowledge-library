@@ -1,1 +1,1 @@
-{"status": "supplement", "name": "矩阵转置", "card": {"name": "矩阵转置", "concept": "矩阵转置是把原矩阵的行与列互换得到的新矩阵，记作 A^T。它常用于把行向量变列向量、表达对称矩阵和化简内积运算。", "formulas": ["(A^T)_{ij}=A_{ji}", "(AB)^T=B^T A^T"], "example": "若 A=\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}，则 A^T=\\begin{pmatrix}1&3\\\\2&4\\end{pmatrix}。", "pitfall": "乘积转置时忘记反序，写成 (AB)^T=A^T B^T；把转置与逆矩阵混淆。", "prereq": ["矩阵", "行与列"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}
+{"status": "exact", "name": "矩阵的转置（Transpose）", "course": "线性代数", "doc_id": "线性代数(第二版) (居余马) (Z-Library)_第2章 矩阵"}

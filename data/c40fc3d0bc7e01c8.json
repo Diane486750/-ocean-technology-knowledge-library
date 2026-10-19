@@ -1,1 +1,1 @@
-{"status": "exact", "name": "极大线性无关组（maximal linearly independent subset）", "course": "线性代数", "doc_id": "线性代数(第二版) (居余马) (Z-Library)_第3章 线性方程组"}
+{"status": "missing", "name": "极大线性无关组", "suggests": [{"name": "向量组的秩与极大线性无关组（rank and maximal linearly independent subset）", "course": "线性代数", "doc_id": "线性代数(第二版) (居余马) (Z-Library)_第3章 线性方程组", "score": 0.706}]}

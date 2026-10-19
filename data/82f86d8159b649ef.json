@@ -1,0 +1,1 @@
+{"status": "supplement", "name": "电导与电阻的关系", "card": {"name": "电导与电阻的关系", "concept": "电导 G 是电阻 R 的倒数，用来衡量导体导电能力；电阻越小，电导越大。节点分析中常用电导表示支路电流与电压的关系。", "formulas": ["G=\\frac{1}{R}", "R=\\frac{1}{G}", "i=Gu"], "example": "一个 2Ω 电阻的电导为 0.5 S。", "pitfall": "不要把电导和电阻直接相加；串联电阻用电阻相加，并联用电导相加。", "prereq": ["欧姆定律", "电阻串并联"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

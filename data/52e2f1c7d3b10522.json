@@ -1,1 +1,1 @@
-{"status": "exact", "name": "电感元件（Inductor / Inductance Element）", "course": "电路分析基础", "doc_id": "第五章 电容元件与电感元件"}
+{"status": "supplement", "name": "电感元件", "card": {"name": "电感元件", "concept": "电感元件是用磁场储存能量的二端元件，电压与电流变化率成正比。它的电流不能突变，因此电感电流也是动态电路的状态变量。", "formulas": ["v_L=L\\frac{di_L}{dt}", "i_L(t)=i_L(t_0)+\\frac{1}{L}\\int_{t_0}^{t} v_L(\\tau)\\,d\\tau", "w_L=\\frac{1}{2}Li_L^2"], "example": "1H 电感电流在 1s 内从 0A 线性升到 1A，则电压约为 1V。", "pitfall": "电感电流不能突变，但电感电压可以突变；注意电压、电流参考方向及符号。", "prereq": ["电流", "导数/积分"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

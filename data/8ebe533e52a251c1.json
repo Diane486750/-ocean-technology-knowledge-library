@@ -1,0 +1,1 @@
+{"status": "exact", "name": "数组下标与指针解引用等价（*(a+n) ≡ a[n]）", "course": "数据结构与算法分析", "doc_id": "pointers"}

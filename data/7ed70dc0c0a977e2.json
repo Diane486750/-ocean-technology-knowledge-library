@@ -1,1 +1,1 @@
-{"status": "supplement", "name": "齐次性（比例性）", "card": {"name": "齐次性", "concept": "齐次性指系统或算子对输入做数乘时，输出也按同一比例缩放。它是线性系统必须满足的性质之一，常与叠加性合起来判断线性。", "formulas": ["T(\\alpha x)=\\alpha T(x)", "x(t)\\to y(t)\\Rightarrow \\alpha x(t)\\to \\alpha y(t)"], "example": "放大器 y(t)=k x(t) 具有齐次性：输入变为 2x(t)，输出就变为 2y(t)。", "pitfall": "只验证齐次性不能说明系统线性，还必须验证叠加性；数乘因子可以是负数或复数。", "prereq": ["函数与映射", "实数数乘"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}
+{"status": "exact", "name": "齐次性（比例性，Homogeneity）", "course": "电路分析基础", "doc_id": "第三章 叠加方法与网络函数"}

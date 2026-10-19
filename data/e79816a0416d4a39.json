@@ -1,1 +1,1 @@
-{"status": "exact", "name": "向量组的秩（rank of a vector group）", "course": "线性代数", "doc_id": "线性代数(第二版) (居余马) (Z-Library)_第3章 线性方程组"}
+{"status": "supplement", "name": "向量组的秩", "card": {"name": "向量组的秩", "concept": "向量组的秩是其中最大线性无关子组所含向量的个数，也等于这些向量张成空间的维数。它用于衡量向量组有几个独立方向，并判断线性相关性。", "formulas": ["r(α_1,\\dots,α_s)=\\dim\\operatorname{span}(α_1,\\dots,α_s)", "秩=矩阵行阶梯形的非零行数"], "example": "{(1,0),(0,1),(1,1)}中第三个可由前两个表出，所以秩为2。", "pitfall": "秩不是向量个数；重复向量、成比例向量或零向量通常不增加秩。", "prereq": ["线性相关与线性无关", "矩阵初等行变换"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

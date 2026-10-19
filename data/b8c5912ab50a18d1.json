@@ -1,1 +1,1 @@
-{"status": "exact", "name": "RC低通电路（RC Low-Pass Circuit）", "course": "电路分析基础", "doc_id": "第十章 频率响应 多频正弦稳态电路"}
+{"status": "missing", "name": "RC低通电路", "suggests": [{"name": "RC低通电路的网络函数", "course": "电路分析基础", "doc_id": "第十章 频率响应 多频正弦稳态电路", "score": 0.714}]}

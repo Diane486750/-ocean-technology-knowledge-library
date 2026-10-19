@@ -1,0 +1,1 @@
+{"status": "supplement", "name": "完全平方公式", "card": {"name": "完全平方公式", "concept": "完全平方公式用于展开两个数之和或之差的平方，也常用于配方法和因式分解。它把一个二次多项式写成平方形式。", "formulas": ["(a\\pm b)^2=a^2\\pm 2ab+b^2", "a^2\\pm 2ab+b^2=(a\\pm b)^2"], "example": "(x+3)^2=x^2+6x+9。", "pitfall": "中间项容易漏掉系数 2，或把加减号写错。", "prereq": ["多项式乘法", "乘法分配律"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

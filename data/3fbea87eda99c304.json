@@ -1,1 +1,1 @@
-{"status": "exact", "name": "数域", "course": "线性代数", "doc_id": "线性代数(第二版) (居余马) (Z-Library)_第2章 矩阵"}
+{"status": "supplement", "name": "数域", "card": {"name": "数域", "concept": "数域是一个包含 0 和 1、且对加、减、乘、除（除数非零）都封闭的复数子集。常见数域有有理数域、实数域和复数域，整数集合不是数域。", "formulas": ["a,b\\in F\\Rightarrow a\\pm b,\\ ab\\in F", "a\\in F,\\ b\\in F,\\ b\\neq0\\Rightarrow \\frac{a}{b}\\in F"], "example": "有理数集 Q、实数集 R、复数集 C 都是数域；整数集 Z 不是数域，因为 1/2 不在 Z 中。", "pitfall": "把整数集或自然数集当成数域；忘记“除法封闭”只要求除数非零。", "prereq": ["集合与封闭性", "有理数、实数、复数"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

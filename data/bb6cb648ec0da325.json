@@ -1,0 +1,1 @@
+{"status": "supplement", "name": "频数", "card": {"name": "频数", "concept": "频数是一组数据中某个取值或类别出现的次数。它用于统计分布和制作频数表，是计算频率、画直方图的基础。", "formulas": ["f_i = \\#\\{j: x_j = v_i\\}", "\\sum_{i=1}^m f_i = n"], "example": "数据 1,2,2,3 中 2 的频数是 2。", "pitfall": "把频数（次数）和频率（次数/总数）混为一谈；分组统计时误把组中值当原始数据。", "prereq": ["计数", "数据分类"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}

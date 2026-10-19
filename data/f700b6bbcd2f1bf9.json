@@ -1,0 +1,1 @@
+{"status": "supplement", "name": "折射率", "card": {"name": "折射率", "concept": "折射率描述介质对光的“减速”程度，是真空光速与介质中光速之比。它决定光进入不同介质时的偏折和光程变化。", "formulas": ["n=\\frac{c}{v}", "n_1\\sin\\theta_1=n_2\\sin\\theta_2"], "example": "水的折射率约为 1.33，所以光在水中的速度约为 c/1.33。", "pitfall": "把入射角、折射角从界面量起，而不是从法线量起。", "prereq": ["光速", "三角函数与角度"], "source": "AI 补充 · 未经老师确认", "verified": false}, "suggests": []}
